@@ -22,3 +22,4 @@ start_sonar_scanner.bat
 
 # Ignore nbprojects #
 /DatabaseLibrary/nbprojects
+/nbproject/
