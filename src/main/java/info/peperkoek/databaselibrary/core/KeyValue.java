@@ -1,6 +1,8 @@
 
 package info.peperkoek.databaselibrary.core;
 
+import info.peperkoek.databaselibrary.interfaces.DatabaseObject;
+
 /**
  *
  * @author Rick Pijnenburg - REXOTIUM
@@ -8,7 +10,7 @@ package info.peperkoek.databaselibrary.core;
  */
 public class KeyValue {
     private final int key;
-    private final Object value;
+    private final DatabaseObject value;
     
     /**
      * Constructs a key/value pair 
@@ -16,7 +18,7 @@ public class KeyValue {
      * @param key integer to indicate the place of the value in the query
      * @param value value that is added in that place of the query
      */
-    public KeyValue(int key, Object value) {
+    public KeyValue(int key, DatabaseObject value) {
         this.key = key;
         this.value = value;
     }
@@ -35,7 +37,7 @@ public class KeyValue {
      * 
      * @return value
      */
-    public Object getValue() {
+    public DatabaseObject getValue() {
         return value;
     }
 }

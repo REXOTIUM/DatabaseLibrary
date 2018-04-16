@@ -19,7 +19,6 @@ public final class DBUtils {
     public static String convertToString(Object object) throws DatabaseException {
         Field key = hasPrimairyKey(object);
         Class<?> type = key.getType();
-        
     }
     
     private static Field hasPrimairyKey(Object object) throws DatabaseException {
