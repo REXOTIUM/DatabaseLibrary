@@ -82,4 +82,34 @@ public class Query {
     public String getObject(int place) {
         return elements.stream().filter(e -> e.getKey() == place).findFirst().orElseThrow(() -> new DatabaseRuntimeException("Element for position " + place + " could not be found.")).getValue().toDatabaseString();
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 53 * hash + Objects.hashCode(this.statement);
+        hash = 53 * hash + this.maxPlaces;
+        hash = 53 * hash + Objects.hashCode(this.elements);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Query other = (Query) obj;
+        if (this.maxPlaces != other.maxPlaces) {
+            return false;
+        }
+        if (!Objects.equals(this.statement, other.statement)) {
+            return false;
+        }
+        return Objects.equals(this.elements, other.elements);
+    }
 }

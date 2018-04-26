@@ -2,6 +2,7 @@
 package info.peperkoek.databaselibrary.core;
 
 import info.peperkoek.databaselibrary.interfaces.DatabaseObject;
+import java.util.Objects;
 
 /**
  *
@@ -39,5 +40,31 @@ public class KeyValue {
      */
     public DatabaseObject getValue() {
         return value;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 31 * hash + this.key;
+        hash = 31 * hash + Objects.hashCode(this.value);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final KeyValue other = (KeyValue) obj;
+        if (this.key != other.key) {
+            return false;
+        }
+        return Objects.equals(this.value, other.value);
     }
 }

@@ -1,24 +1,54 @@
 package info.peperkoek.databaselibrary;
 
 import info.peperkoek.databaselibrary.enums.Database;
+import info.peperkoek.databaselibrary.interfaces.DataAccessObject;
 
 /**
  *
  * @author Rick Pijnenburg - REXOTIUM
  * @email m.a.a.pijnenburg@gmail.com
  */
-public class DatabaseManager {
-    private final String user;
-    private final String password;
-    private final String url;
-    private final String port;
-    private final Database database;
+public final class DatabaseManager {
+    private static final String MSSQL_DB = "jdbc:sqlserver://{0};";
+    private static final String MYSQL_DB = "jdbc:mysql://{0};";
+    private static final String ORACLE_DB = "jdbc:oracle:thin:@{0};";
     
-    public DatabaseManager(String user, String password, String url, String port, Database database) {
-        this.user = user;
-        this.password = password;
-        this.url = url;
-        this.port = port;
-        this.database = database;
+    /**
+     * 
+     * @param user
+     * @param password
+     * @param databaseUrl
+     * @param database
+     * @return 
+     */
+    public static DataAccessObject getManager(String user, String password, String databaseUrl, Database database) {
+        
+    }
+    
+    /**
+     * 
+     * @param user
+     * @param password
+     * @param databaseUrl
+     * @param databaseName
+     * @param database
+     * @return 
+     */
+    public static DataAccessObject getManager(String user, String password, String databaseUrl, String databaseName, Database database) {
+        
+    }
+    
+    /**
+     * 
+     * @param user
+     * @param password
+     * @param databaseUrl
+     * @param databaseName
+     * @param port
+     * @param database
+     * @return 
+     */
+    public static DataAccessObject getManager(String user, String password, String databaseUrl, String databaseName, int port, Database database) {
+        
     }
 }
