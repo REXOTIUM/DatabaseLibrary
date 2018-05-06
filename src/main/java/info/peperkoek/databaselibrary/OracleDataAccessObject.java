@@ -18,17 +18,17 @@ public class OracleDataAccessObject implements DataAccessObject {
     }
 
     @Override
-    public <T> T getObject(Query query) throws DatabaseException {
+    public <T> T getObject(Class<T> clazz, Query query) throws DatabaseException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public <T> Collection<T> getObjects() throws DatabaseException {
+    public <T> Collection<T> getObjects(Class<T> clazz) throws DatabaseException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public <T> Collection<T> getObjects(Query query) throws DatabaseException {
+    public <T> Collection<T> getObjects(Class<T> clazz, Query query) throws DatabaseException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -63,17 +63,17 @@ public class OracleDataAccessObject implements DataAccessObject {
     }
 
     @Override
-    public <T> int removeObject(T obj) throws DatabaseException {
+    public <T> boolean removeObject(T obj) throws DatabaseException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public <T> int removeObjects(T[] obj) throws DatabaseException {
+    public <T> boolean removeObjects(T[] obj) throws DatabaseException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public <T> int removeObjects(Collection<T> obj) throws DatabaseException {
+    public <T> boolean removeObjects(Collection<T> obj) throws DatabaseException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

@@ -14,7 +14,7 @@ public class Query {
     public static final String QUERY_PARAMETER_PLACEHOLDER = ":-:";
     private final String statement;
     private final int maxPlaces;
-    private Collection<KeyValue> elements;
+    private Collection<QueryKeyValue> elements;
     
     /**
      * Constructs a query with a statement that is to be executed by the DAO
@@ -74,9 +74,9 @@ public class Query {
             throw new DatabaseRuntimeException("Element could not be added, position is smaller than 0.");
         if(place >= maxPlaces)
             throw new DatabaseRuntimeException("Element could not be added, position is bigger than possible positions.");
-        if(elements.stream().allMatch(e -> e.getKey() == place))
+        if(elements.stream().anyMatch(e -> e.getKey() == place))
             throw new DatabaseRuntimeException("Element could not be added, position already taken in this query.");
-        this.elements.add(new KeyValue(place, element));
+        this.elements.add(new QueryKeyValue(place, element));
     }
     
     public String getObject(int place) {
@@ -111,5 +111,65 @@ public class Query {
             return false;
         }
         return Objects.equals(this.elements, other.elements);
+    }
+    
+    private class QueryKeyValue {
+        private final int key;
+        private final DatabaseObject value;
+
+        /**
+         * Constructs a key/value pair 
+         * 
+         * @param key integer to indicate the place of the value in the query
+         * @param value value that is added in that place of the query
+         */
+        public QueryKeyValue(int key, DatabaseObject value) {
+            this.key = key;
+            this.value = value;
+        }
+
+        /**
+         * Get the value of the key of this key/value pair
+         * 
+         * @return key
+         */
+        public int getKey() {
+            return key;
+        }
+
+        /**
+         * Get the value of this key/value pair
+         * 
+         * @return value
+         */
+        public DatabaseObject getValue() {
+            return value;
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 3;
+            hash = 31 * hash + this.key;
+            hash = 31 * hash + Objects.hashCode(this.value);
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final QueryKeyValue other = (QueryKeyValue) obj;
+            if (this.key != other.key) {
+                return false;
+            }
+            return Objects.equals(this.value, other.value);
+        }
     }
 }

@@ -1,8 +1,7 @@
-
 package info.peperkoek.databaselibrary.core;
 
-import info.peperkoek.databaselibrary.interfaces.DatabaseObject;
 import java.util.Objects;
+
 
 /**
  *
@@ -10,46 +9,49 @@ import java.util.Objects;
  * @email m.a.a.pijnenburg@gmail.com
  */
 public class KeyValue {
-    private final int key;
-    private final DatabaseObject value;
+    private String key;
+    private String value;
     
     /**
-     * Constructs a key/value pair 
      * 
-     * @param key integer to indicate the place of the value in the query
-     * @param value value that is added in that place of the query
+     * @return 
      */
-    public KeyValue(int key, DatabaseObject value) {
-        this.key = key;
-        this.value = value;
-    }
-    
-    /**
-     * Get the value of the key of this key/value pair
-     * 
-     * @return key
-     */
-    public int getKey() {
+    public String getKey() {
         return key;
     }
     
     /**
-     * Get the value of this key/value pair
      * 
-     * @return value
+     * @return 
      */
-    public DatabaseObject getValue() {
+    public String getValue() {
         return value;
     }
-
+    
+    /**
+     * 
+     * @param key 
+     */
+    public void setKey(String key) {
+        this.key = key;
+    }
+    
+    /**
+     * 
+     * @param value 
+     */
+    public void setValue(String value) {
+        this.value = value;
+    }
+    
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 31 * hash + this.key;
-        hash = 31 * hash + Objects.hashCode(this.value);
+        int hash = 5;
+        hash = 97 * hash + Objects.hashCode(this.key);
+        hash = 97 * hash + Objects.hashCode(this.value);
         return hash;
     }
-
+    
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -62,9 +64,14 @@ public class KeyValue {
             return false;
         }
         final KeyValue other = (KeyValue) obj;
-        if (this.key != other.key) {
+        if (!Objects.equals(this.key, other.key)) {
             return false;
         }
         return Objects.equals(this.value, other.value);
+    }
+    
+    @Override
+    public String toString() {
+        return "KeyValue{" + "key=" + key + ", value=" + value + '}';
     }
 }
