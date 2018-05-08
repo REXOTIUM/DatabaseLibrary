@@ -11,8 +11,8 @@ import java.util.Collection;
  */
 public interface DataAccessObject {
     public static final String A = "A.";
-    public static final String ID = "_id";
     public static final String EMPTY = "";
+    public static final String ID = "_id";
     public static final String EQUALS = " = ";
     public static final String COMMA = ", ";
     public static final String AND = " AND ";
@@ -30,28 +30,29 @@ public interface DataAccessObject {
     public static final String INSERT_ITEM_OUTPUT = "INSERT INTO %s (%s) OUTPUT INSERTED.%s VALUES (%s)";
     public static final String UPDATE_ITEM = "UPDATE %s SET %s WHERE %s";
     public static final String INSERT_LINK_TABLE = "INSERT INTO %s (%s, %s) VALUES (%s, %s)";
-    public static final String SELECT_LINK_TABLE = "SELECT %s from %s A join %s B on A.%s = B.%s where %s";
+    public static final String SELECT_LINK_TABLE = "SELECT * from %s A join %s B on A.%s = B.%s where %s";
     
-    public <T> T getObject(T item) throws DatabaseException;
+    public <T, U> T getObject(Class<T> clazz, U item);
     
-    public <T> T getObject(Class<T> clazz, Query query) throws DatabaseException;
+    public <T> T getObject(Class<T> clazz, Query query);
     
-    public <T> Collection<T> getObjects(Class<T> clazz) throws DatabaseException;
+    public <T> Collection<T> getObjects(Class<T> clazz);
     
-    public <T> Collection<T> getObjects(Class<T> clazz, Query query) throws DatabaseException;
+    public <T, U> Collection<T> getObjects(Class<T> clazz, U item);
+    
+    public <T> Collection<T> getObjects(Class<T> clazz, Query query);
     
     /**
      * Inserts object into database.
      * @param <T>
      * @param obj
      * @return True if item is inserted.
-     * @throws info.peperkoek.databaselibrary.exceptions.DatabaseException
      */
-    public <T> boolean insertObject(T obj) throws DatabaseException;
+    public <T> boolean insertObject(T obj);
     
-    public <T> boolean insertObjects(T[] obj) throws DatabaseException;
+    public <T> boolean insertObjects(T[] obj);
     
-    public <T> boolean insertObjects(Collection<T> obj) throws DatabaseException;
+    public <T> boolean insertObjects(Collection<T> obj);
     
     /**
      * Updates object in the database.
@@ -60,13 +61,12 @@ public interface DataAccessObject {
      * @param <T>
      * @param obj
      * @return True if item is updated.
-     * @throws info.peperkoek.databaselibrary.exceptions.DatabaseException
      */
-    public <T> boolean updateObject(T obj) throws DatabaseException;
+    public <T> boolean updateObject(T obj);
     
-    public <T> boolean updateObjects(T[] obj) throws DatabaseException;
+    public <T> boolean updateObjects(T[] obj);
     
-    public <T> boolean updateObjects(Collection<T> obj) throws DatabaseException;
+    public <T> boolean updateObjects(Collection<T> obj);
     
     /**
      * Deletes object in the database.
@@ -75,11 +75,10 @@ public interface DataAccessObject {
      * @param <T>
      * @param obj
      * @return True if item is deleted.
-     * @throws info.peperkoek.databaselibrary.exceptions.DatabaseException
      */
-    public <T> boolean removeObject(T obj) throws DatabaseException;
+    public <T> boolean removeObject(T obj);
     
-    public <T> boolean removeObjects(T[] obj) throws DatabaseException;
+    public <T> boolean removeObjects(T[] obj);
     
-    public <T> boolean removeObjects(Collection<T> obj) throws DatabaseException;
+    public <T> boolean removeObjects(Collection<T> obj);
 }

@@ -1,7 +1,6 @@
 package info.peperkoek.databaselibrary;
 
 import info.peperkoek.databaselibrary.core.Query;
-import info.peperkoek.databaselibrary.exceptions.DatabaseException;
 import info.peperkoek.databaselibrary.interfaces.DataAccessObject;
 import java.util.Collection;
 
@@ -13,67 +12,72 @@ import java.util.Collection;
 public class OracleDataAccessObject implements DataAccessObject {
 
     @Override
-    public <T> T getObject(T item) throws DatabaseException {
+    public <T, U> T getObject(Class<T> clazz, U item) {
+        return getObjects(clazz, item).stream().findFirst().orElse(null);
+    }
+
+    @Override
+    public <T> T getObject(Class<T> clazz, Query query) {
+        return getObjects(clazz, query).stream().findFirst().orElse(null);
+    }
+
+    @Override
+    public <T> Collection<T> getObjects(Class<T> clazz) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    @Override
+    public <T, U> Collection<T> getObjects(Class<T> clazz, U item) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public <T> T getObject(Class<T> clazz, Query query) throws DatabaseException {
+    public <T> Collection<T> getObjects(Class<T> clazz, Query query) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public <T> Collection<T> getObjects(Class<T> clazz) throws DatabaseException {
+    public <T> boolean insertObject(T obj) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public <T> Collection<T> getObjects(Class<T> clazz, Query query) throws DatabaseException {
+    public <T> boolean insertObjects(T[] obj) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public <T> boolean insertObject(T obj) throws DatabaseException {
+    public <T> boolean insertObjects(Collection<T> obj) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public <T> boolean insertObjects(T[] obj) throws DatabaseException {
+    public <T> boolean updateObject(T obj) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public <T> boolean insertObjects(Collection<T> obj) throws DatabaseException {
+    public <T> boolean updateObjects(T[] obj) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public <T> boolean updateObject(T obj) throws DatabaseException {
+    public <T> boolean updateObjects(Collection<T> obj) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public <T> boolean updateObjects(T[] obj) throws DatabaseException {
+    public <T> boolean removeObject(T obj) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public <T> boolean updateObjects(Collection<T> obj) throws DatabaseException {
+    public <T> boolean removeObjects(T[] obj) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public <T> boolean removeObject(T obj) throws DatabaseException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public <T> boolean removeObjects(T[] obj) throws DatabaseException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public <T> boolean removeObjects(Collection<T> obj) throws DatabaseException {
+    public <T> boolean removeObjects(Collection<T> obj) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

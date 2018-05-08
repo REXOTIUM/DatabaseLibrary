@@ -50,7 +50,7 @@ public class StringUtils {
      * @param secondSeperator
      * @return 
      */
-    static StringBuilder createString(List<KeyValue> kvs, String firstSeperator, String secondSeperator) {
+    public static StringBuilder createString(List<KeyValue> kvs, String firstSeperator, String secondSeperator) {
         StringBuilder output = new StringBuilder();
         for (KeyValue kv : kvs) {
             if (kv.getValue() == null || EMPTY.equals(kv.getValue())) {
