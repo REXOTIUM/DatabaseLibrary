@@ -1,6 +1,5 @@
 package info.peperkoek.databaselibrary.core;
 
-import info.peperkoek.databaselibrary.interfaces.DatabaseObject;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -9,8 +8,8 @@ import static org.junit.Assert.*;
  * @author Rick Pijnenburg
  */
 public class KeyValueTest {
-    private static final int KEY = 0;
-    private static final DatabaseObject OBJECT = () -> "Object";
+    private static final String KEY = "Key";
+    private static final String OBJECT = "Object";
     private static final KeyValue INSTANCE = new KeyValue(KEY, OBJECT);
 
     /**
@@ -18,7 +17,7 @@ public class KeyValueTest {
      */
     @Test
     public void testGetKey() {
-        int result = INSTANCE.getKey();
+        String result = INSTANCE.getKey();
         assertEquals(KEY, result);
     }
 
@@ -27,7 +26,7 @@ public class KeyValueTest {
      */
     @Test
     public void testGetValue() {
-        Object result = INSTANCE.getValue();
+        String result = INSTANCE.getValue();
         assertEquals(OBJECT, result);
     }
 }

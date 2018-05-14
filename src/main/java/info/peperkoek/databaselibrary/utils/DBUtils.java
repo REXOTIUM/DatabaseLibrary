@@ -29,11 +29,18 @@ public final class DBUtils {
     private static final String GET = "get";
     private static final String SET = "set";
     private static final String APPA = "\'";
+    private static final String MISSING_PK = "No primary key found in class: ";
     
     private DBUtils() {
         throw new IllegalAccessError("Utility class");
     }
     
+    /**
+     * 
+     * @param <T>
+     * @param clazz
+     * @return 
+     */
     public static <T> String getColumnString(Class<T> clazz) {
         StringBuilder output = new StringBuilder();
         for(Field f : getAllFields(clazz)) {
@@ -108,7 +115,24 @@ public final class DBUtils {
                 LOG.log(Level.SEVERE, null, ex);
             }
         }
-        throw new DatabaseRuntimeException("No primary key found in class: " + item.getClass());
+        throw new DatabaseRuntimeException(MISSING_PK + item.getClass());
+    }
+    
+    /**
+     * 
+     * @param <T>
+     * @param clazz
+     * @return 
+     */
+    public static <T> String getPrimaryKeyName(Class<T> clazz) {
+        Field[] fields = getAllFields(clazz);
+        for (Field f : fields) {
+            if (!f.isAnnotationPresent(PrimaryKey.class)) {
+                continue;
+            }
+            return getKeyName(f);
+        }
+        throw new DatabaseRuntimeException(MISSING_PK + clazz);
     }
     
     /**
@@ -138,7 +162,7 @@ public final class DBUtils {
                 LOG.log(Level.SEVERE, null, ex);
             }
         }
-        throw new DatabaseRuntimeException("No primary key found in class: " + item.getClass());
+        throw new DatabaseRuntimeException(MISSING_PK + item.getClass());
     }
     
     /**
@@ -210,6 +234,94 @@ public final class DBUtils {
             } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
                 LOG.log(Level.SEVERE, null, ex);
                 return null;
+            }
+        }
+    }
+    
+    /**
+     * Returns the field of class clazz with name field.
+     * 
+     * Note: is the field uses annotation MapAs it will check if the mapping matches field too.
+     * @param <T>
+     * @param clazz
+     * @param field
+     * @return 
+     */
+    public static <T> Field getFieldFromString(Class<T> clazz, String field) {
+        Field[] fields = getAllFields(clazz);
+        for (Field f : fields) {
+            if (f.getName().equals(field)) {
+                return f;
+            }
+            if (f.isAnnotationPresent(Map.class) && f.getAnnotation(Map.class).mapping().equals(field)) {
+                return f;
+            }
+            if(f.isAnnotationPresent(ForeignKey.class) && (getTableName(f.getType()) + ID).equals(field)) {
+                return f;
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * 
+     * @param <T>
+     * @param item
+     * @param field
+     * @param value
+     * @return 
+     */
+    public static <T> boolean setField(T item, Field field, String value) {
+        Class c = field.getType();
+        String method = SET + firstToUpper(field.getName());
+        if (Modifier.isPublic(field.getModifiers())) {
+            try {
+                field.set(item, stringToObject(c, value));
+                return true;
+            } catch (IllegalArgumentException | IllegalAccessException | ParseException ex) {
+                LOG.log(Level.SEVERE, null, ex);
+                return false;
+            }
+        } else {
+            try {
+                Method m = getMethod(item, method, c);
+                m.invoke(item, stringToObject(c, value));
+                return true;
+            } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | ParseException ex) {
+                LOG.log(Level.SEVERE, null, ex);
+                return false;
+            }
+        }
+    }
+    
+    /**
+     * 
+     * @param <T>
+     * @param <U>
+     * @param item
+     * @param field
+     * @param value
+     * @return 
+     */
+    public static <T, U> boolean setField(T item, Field field, U value) {
+        Class c = field.getType();
+        String method = SET + firstToUpper(field.getName());
+        if (Modifier.isPublic(field.getModifiers())) {
+            try {
+                field.set(item, value);
+                return true;
+            } catch (IllegalArgumentException | IllegalAccessException ex) {
+                LOG.log(Level.SEVERE, null, ex);
+                return false;
+            }
+        } else {
+            try {
+                Method m = getMethod(item, method, c);
+                m.invoke(item, value);
+                return true;
+            } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+                LOG.log(Level.SEVERE, null, ex);
+                return false;
             }
         }
     }
@@ -426,5 +538,26 @@ public final class DBUtils {
         } else {
             return GET + firstToUpper(f.getName());
         }
+    }
+    
+    /**
+     * 
+     * @param <T>
+     * @param item
+     * @param method
+     * @param c
+     * @return
+     * @throws NoSuchMethodException 
+     */
+    private static <T> Method getMethod(T item, String method, Class c) throws NoSuchMethodException {
+        for(Method m : item.getClass().getMethods()) {
+            if(m.isAnnotationPresent(MethodMapping.class)) {
+                if(method.equals(m.getAnnotation(MethodMapping.class).mapping()) && m.getParameterCount() == 1 && m.getParameterTypes()[0] == c)
+                    return m;
+            } else if(method.equals(m.getName()) && m.getParameterCount() == 1 && m.getParameterTypes()[0] == c) {
+                return m;
+            }
+        }
+        throw new NoSuchMethodException();
     }
 }

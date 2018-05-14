@@ -274,7 +274,26 @@ public class MSSQLDataAccessObject implements DataAccessObject {
     }
 
     private <T> boolean insertQuery(T obj, String sql) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        LOG.log(Level.INFO, sql);
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        try {
+            conn = getConnection();
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                rs.getString(1);
+                
+                //TODO:
+            }
+            return true;
+        } catch (SQLException ex) {
+            LOG.log(Level.SEVERE, null, ex);
+            return false;
+        } finally {
+            closeStatementAndResult(rs, stmt, conn);
+        }
     }
 
     private boolean nonQuery(String sql) {
@@ -431,7 +450,7 @@ public class MSSQLDataAccessObject implements DataAccessObject {
                 if(field.isAnnotationPresent(ForeignKey.class)) {
                     LOG.log(Level.INFO, "Foreign key found. Key name: {0}. Key value: {1}. Key class: {2}", new Object[]{entry.getKey(), entry.getValue(), field.getType().toString()});
                     //If the value is null insert null on the place of the foreign key otherwise get item from db
-                    DBUtils.setField(output, field, (entry.getValue() == null) ? null : getItem(field.getType(), Integer.parseInt(entry.getValue())));
+                    DBUtils.setField(output, field, (entry.getValue() == null) ? null : getItem(field.getType(), entry.getValue()));
                 } else {
                     DBUtils.setField(output, field, entry.getValue());
                 }
@@ -503,6 +522,28 @@ public class MSSQLDataAccessObject implements DataAccessObject {
         } catch (NoSuchMethodException | SecurityException ex) {
             LOG.log(Level.SEVERE, NO_VALID_CONSTRUCTOR, ex);
             return output;
+        }
+    }
+    
+    /**
+     * Get item which has primary key pk.
+     * @param <T>
+     * @param clazz
+     * @param pk 
+     * @return item with primary key pk or null is no item with that primary key exists.
+     */
+    private <T> T getItem(Class<T> clazz, String pk) {
+        try {
+            Constructor<T> constructor = clazz.getConstructor((Class<?>[]) null);
+            String table = DBUtils.getTableName(clazz);
+            String sql = String.format(SELECT_WHERE_PK, DBUtils.getColumnString(clazz), table, DBUtils.getPrimaryKeyName(clazz), pk);
+            List<Map<String, String>> maps = query(sql);
+            if(!maps.isEmpty())
+                return toInstance(constructor, maps.get(0));
+            return null;
+        } catch (NoSuchMethodException | SecurityException ex) {
+            LOG.log(Level.SEVERE, NO_VALID_CONSTRUCTOR, ex);
+            return null;
         }
     }
 }

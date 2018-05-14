@@ -1,7 +1,6 @@
 package info.peperkoek.databaselibrary.interfaces;
 
 import info.peperkoek.databaselibrary.core.Query;
-import info.peperkoek.databaselibrary.exceptions.DatabaseException;
 import java.util.Collection;
 
 /**
@@ -16,13 +15,13 @@ public interface DataAccessObject {
     public static final String EQUALS = " = ";
     public static final String COMMA = ", ";
     public static final String AND = " AND ";
-    public static final String MISSING_PK = "Primary key is null. Is annotation PrimaryKey applied?";
+    public static final String MISSING_PK = "Primary key can not be found. Is annotation PrimaryKey applied?";
     public static final String NO_VALID_CONSTRUCTOR = "Cannot find empty public constructor. Empty meaning no arguments.";
     public static final String SELECT_ALL = "SELECT %s FROM %s";
     public static final String SELECT_ID = "SELECT id FROM %s";
     public static final String SELECT_ID_WHERE = "SELECT id FROM %s WHERE %s";
     public static final String SELECT_WHERE = "SELECT %s FROM %s WHERE %s";
-    public static final String SELECT_WHERE_ID = "SELECT %s FROM %s WHERE id = %s";
+    public static final String SELECT_WHERE_PK = "SELECT %s FROM %s WHERE %s = %s";
     public static final String SELECT_TOP = "SELECT TOP %s %s FROM %s";
     public static final String SELECT_TOP_ORDER = "SELECT TOP %s %s FROM %s ORDER BY %s";
     public static final String DELETE_ITEM = "DELETE FROM %s WHERE %s";
