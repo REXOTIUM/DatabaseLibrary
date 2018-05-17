@@ -4,9 +4,9 @@ import info.peperkoek.databaselibrary.core.KeyValue;
 import java.util.List;
 
 /**
- *
+ * Utility class for string manipulations for the database managers.
+ * 
  * @author Rick Pijnenburg - REXOTIUM
- * @email m.a.a.pijnenburg@gmail.com
  */
 public class StringUtils {
     private static final String EMPTY = "";
@@ -45,10 +45,11 @@ public class StringUtils {
      * first seperator will be used to seperate key and value.
      * second seperator will be used to seperate keyvalue 1 and keyvalue 2.
      * 
-     * @param kvs
-     * @param firstSeperator
-     * @param secondSeperator
-     * @return 
+     * @param kvs The list of KeyValues
+     * @param firstSeperator The first seperator. Will be between the key and the value
+     * @param secondSeperator The second seperator. Will be between 2 instances of KeyValue
+     * @return A stringbuilder with the string in it
+     * @see KeyValue
      */
     public static StringBuilder createString(List<KeyValue> kvs, String firstSeperator, String secondSeperator) {
         StringBuilder output = new StringBuilder();

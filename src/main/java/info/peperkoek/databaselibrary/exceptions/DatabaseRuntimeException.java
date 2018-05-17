@@ -3,7 +3,6 @@ package info.peperkoek.databaselibrary.exceptions;
 /**
  *
  * @author Rick Pijnenburg - REXOTIUM
- * @email m.a.a.pijnenburg@gmail.com
  */
 public class DatabaseRuntimeException extends RuntimeException {
     private static final long serialVersionUID = 7353342597997591647L;

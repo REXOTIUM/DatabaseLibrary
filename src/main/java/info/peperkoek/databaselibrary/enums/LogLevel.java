@@ -9,19 +9,19 @@ package info.peperkoek.databaselibrary.enums;
  */
 public enum LogLevel {
     /**
-     * 
+     * All possible messages can be found in the logs.
      */
     DEBUG,
     /**
-     * 
+     * Queries and keys can be found in the logs.
      */
     INFO,
     /**
-     * 
+     * Only queries can be found in the logs.
      */
     QUERY,
     /**
-     * 
+     * The database managers dont log anything (exceptions that occur in any util classes will still be shown).
      */
     NONE 
 }

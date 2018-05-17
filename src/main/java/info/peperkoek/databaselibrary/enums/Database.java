@@ -1,10 +1,21 @@
 package info.peperkoek.databaselibrary.enums;
 
 /**
- *
+ * Used for selecting the right database manager
+ * 
  * @author Rick Pijnenburg - REXOTIUM
- * @email m.a.a.pijnenburg@gmail.com
  */
 public enum Database {
-    ORACLE, MSSQL, MYSQL
+    /**
+     * Select the oracle database
+     */
+    ORACLE,
+    /**
+     * Select the microsoft sql server database
+     */
+    MSSQL,
+    /**
+     * Select the mysql databse
+     */
+    MYSQL
 }

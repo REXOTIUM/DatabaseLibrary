@@ -2,13 +2,13 @@ package info.peperkoek.databaselibrary.core;
 
 import java.util.Objects;
 
-
 /**
- *
+ * Used for the easier use of classes their fields in the database managers
+ * 
  * @author Rick Pijnenburg - REXOTIUM
- * @email m.a.a.pijnenburg@gmail.com
  */
-public class KeyValue {
+public final class KeyValue {
+    private static final String TO_STRING = "Key: {0}, Value{1}";
     private String key;
     private String value;
     
@@ -20,8 +20,8 @@ public class KeyValue {
     
     /**
      * 
-     * @param key
-     * @param value 
+     * @param key The key
+     * @param value The value
      */
     public KeyValue(String key, String value) {
         this.key = key;
@@ -30,7 +30,7 @@ public class KeyValue {
     
     /**
      * 
-     * @return 
+     * @return The key
      */
     public String getKey() {
         return key;
@@ -38,7 +38,7 @@ public class KeyValue {
     
     /**
      * 
-     * @return 
+     * @return The value
      */
     public String getValue() {
         return value;
@@ -46,7 +46,7 @@ public class KeyValue {
     
     /**
      * 
-     * @param key 
+     * @param key The new key
      */
     public void setKey(String key) {
         this.key = key;
@@ -54,7 +54,7 @@ public class KeyValue {
     
     /**
      * 
-     * @param value 
+     * @param value The new value
      */
     public void setValue(String value) {
         this.value = value;
@@ -88,6 +88,6 @@ public class KeyValue {
     
     @Override
     public String toString() {
-        return "KeyValue{" + "key=" + key + ", value=" + value + '}';
+        return String.format(TO_STRING, key, value);
     }
 }
