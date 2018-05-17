@@ -121,8 +121,8 @@ final class DBUtils {
     /**
      * 
      * @param <T> The type of the class
-     * @param clazz
-     * @return 
+     * @param clazz Class for which to get the primary key name
+     * @return Name of the primary key
      */
     static <T> String getPrimaryKeyName(Class<T> clazz) {
         Field[] fields = getAllFields(clazz);
@@ -138,8 +138,8 @@ final class DBUtils {
     /**
      * Returns string representation of the primary key value.
      * @param <T> The type of the item
-     * @param item
-     * @return 
+     * @param item Item which contains the primary key
+     * @return String representation of the primary key value
      */
     static <T> String getPrimaryKeyValue(T item) {
         Field[] fields = getAllFields(item.getClass());
@@ -168,13 +168,13 @@ final class DBUtils {
     /**
      * Returns the tablename for a class.
      * @param <T> The type of the item
-     * @param item
-     * @return 
+     * @param clazz The class for which the table name will be returned
+     * @return The name of the table for this class
      */
-    static <T> String getTableName(Class<T> item) {
-        Entity a = item.getAnnotation(Entity.class);
+    static <T> String getTableName(Class<T> clazz) {
+        Entity a = clazz.getAnnotation(Entity.class);
         if (a == null) {
-            return item.getSimpleName();
+            return clazz.getSimpleName();
         }
         return a.tableName();
     }
@@ -183,9 +183,9 @@ final class DBUtils {
      * Returns a list of keyvalues of all fields of item (ignoring the fields annotated with Ignore).
      * If ignorePK is true primary key(annotated with PrimaryKey) will be ignored too.
      * @param <T> The type of the item
-     * @param item
-     * @param ignorePK
-     * @return 
+     * @param item The item to get all fields from
+     * @param ignorePK If the primary key should be ignored
+     * @return List of keys and values which represent the fields of the items
      */
     static <T> List<KeyValue> getFields(T item, boolean ignorePK) {
         List<KeyValue> output = new ArrayList<>();
@@ -355,6 +355,23 @@ final class DBUtils {
     }
     
     /**
+     * Gets all fields of a class.
+     * @param <T> The type of the class
+     * @param clazz
+     * @return 
+     */
+    static <T> Field[] getAllFields(Class<T> clazz) {
+        ArrayList<Field> fields = new ArrayList<>();
+        getFieldsOfClass(clazz, fields, true);
+        Class c = clazz.getSuperclass();
+        while(c != null && c != Object.class) {
+            getFieldsOfClass(c, fields, false);
+            c = c.getSuperclass();
+        }
+        return fields.toArray(new Field[]{});
+    }
+    
+    /**
      * Gets the database column name for field f.
      * @param f The field to get the name from
      * @return The name
@@ -372,12 +389,12 @@ final class DBUtils {
      * This method is to get the value from the item via a (public) field.
      * 
      * @param <T> The type of the item
-     * @param foreign
-     * @param nullable
-     * @param f
-     * @param item
-     * @param key
-     * @return 
+     * @param foreign if it is a foreign key or not
+     * @param nullable if it is nullable or not
+     * @param f The field
+     * @param item The item to which the field belongs
+     * @param key the name of the key
+     * @return A key value pair of the field
      */
     private static <T> KeyValue getPublicField(boolean foreign, boolean nullable, Field f, T item, String key) {
         try {
@@ -398,10 +415,10 @@ final class DBUtils {
     
     /**
      * Gets the primary key of the object o and returns it as the foreignkey.
-     * @param f
-     * @param o
-     * @param nullable
-     * @return 
+     * @param f The field of the item (i.e. this is the foreign key field)
+     * @param o The object (the value of the field) of which the primary key will be returned
+     * @param nullable if the key is nullable or not
+     * @return A key value pair for the foreign key
      */
     private static KeyValue getForeignKey(Field f, Object o, boolean nullable) {
         if(o == null && nullable) {
@@ -461,8 +478,8 @@ final class DBUtils {
             return nullable ? "null" :EMPTY;
         }
         Class<?> c = o.getClass();
-        if (o instanceof DatabaseObject) {
-            DatabaseObject obj = (DatabaseObject) o;
+        if (o instanceof IDatabaseObject) {
+            IDatabaseObject obj = (IDatabaseObject) o;
             return APPA + obj.toDatabaseString() + APPA;
         } else if (c == Boolean.class) {
             return (boolean) o ? "\'y\'" : "\'n\'";
@@ -494,9 +511,9 @@ final class DBUtils {
             return Long.parseLong(value);
         } else if (c == Boolean.class || c == boolean.class) {
             return "y".equals(value);
-        } else if (DatabaseObject.class.isAssignableFrom(c)) {
+        } else if (IDatabaseObject.class.isAssignableFrom(c)) {
             try {
-                DatabaseObject obj = (DatabaseObject) c.newInstance();
+                IDatabaseObject obj = (IDatabaseObject) c.newInstance();
                 return obj.toObject(value);
             } catch (InstantiationException | IllegalAccessException ex) {
                 LOG.log(Level.SEVERE, null, ex);
@@ -510,23 +527,6 @@ final class DBUtils {
             }
         }
         throw new ParseException("Class unknown: " + c.getName() + " Cannot parse value.", 0);
-    }
-    
-    /**
-     * Gets all fields of a class.
-     * @param <T> The type of the class
-     * @param clazz
-     * @return 
-     */
-    public static <T> Field[] getAllFields(Class<T> clazz) {
-        ArrayList<Field> fields = new ArrayList<>();
-        getFieldsOfClass(clazz, fields, true);
-        Class c = clazz.getSuperclass();
-        while(c != null && c != Object.class) {
-            getFieldsOfClass(c, fields, false);
-            c = c.getSuperclass();
-        }
-        return fields.toArray(new Field[]{});
     }
     
     /**
