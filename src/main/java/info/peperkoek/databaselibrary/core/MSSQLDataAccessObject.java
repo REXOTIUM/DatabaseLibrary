@@ -25,15 +25,14 @@ import java.util.logging.Logger;
 /**
  *
  * @author Rick Pijnenburg - REXOTIUM
- * @email m.a.a.pijnenburg@gmail.com
  */
-class MSSQLDataAccessObject implements DataAccessObject {
+class MSSQLDataAccessObject extends DataAccessObject {
     private static final Logger LOG = Logger.getLogger(MSSQLDataAccessObject.class.getName());
     private final String connectionString;
     
     /**
      * 
-     * @param connectionString 
+     * @param connectionString The string to establish the connection to the database
      */
     MSSQLDataAccessObject(String connectionString) {
         this.connectionString = connectionString;
@@ -278,18 +277,17 @@ class MSSQLDataAccessObject implements DataAccessObject {
             conn = getConnection();
             stmt = conn.createStatement();
             rs = stmt.executeQuery(sql);
-            while (rs.next()) {
-                rs.getString(1);
-                
-                //TODO:
+            if(rs.next()) {
+                String s = rs.getString(1);
+                DBUtils.setPrimaryKey(obj, s);
+                return true;
             }
-            return true;
         } catch (SQLException ex) {
             LOG.log(Level.SEVERE, null, ex);
-            return false;
         } finally {
             closeStatementAndResult(rs, stmt, conn);
         }
+        return false;
     }
 
     private boolean nonQuery(String sql) {

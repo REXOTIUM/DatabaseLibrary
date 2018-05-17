@@ -7,7 +7,6 @@ import java.util.*;
 /**
  *
  * @author Rick Pijnenburg - REXOTIUM
- * @email m.a.a.pijnenburg@gmail.com
  */
 public class Query {
     public static final String QUERY_PARAMETER_PLACEHOLDER = ":-:";
@@ -68,7 +67,7 @@ public class Query {
      * @param place place where the element needs to be inserted
      * @param element element to be placed
      */
-    public void addElement(int place, DatabaseObject element) {
+    public void addElement(int place, IDatabaseObject element) {
         if(place < 0)
             throw new DatabaseRuntimeException("Element could not be added, position is smaller than 0.");
         if(place >= maxPlaces)
@@ -78,6 +77,11 @@ public class Query {
         this.elements.add(new QueryKeyValue(place, element));
     }
     
+    /**
+     * 
+     * @param place The place of the object
+     * @return String representation of the object on that place
+     */
     public String getObject(int place) {
         return elements.stream().filter(e -> e.getKey() == place).findFirst().orElseThrow(() -> new DatabaseRuntimeException("Element for position " + place + " could not be found.")).getValue().toDatabaseString();
     }
@@ -114,7 +118,7 @@ public class Query {
     
     private class QueryKeyValue {
         private final int key;
-        private final DatabaseObject value;
+        private final IDatabaseObject value;
 
         /**
          * Constructs a key/value pair 
@@ -122,7 +126,7 @@ public class Query {
          * @param key integer to indicate the place of the value in the query
          * @param value value that is added in that place of the query
          */
-        public QueryKeyValue(int key, DatabaseObject value) {
+        public QueryKeyValue(int key, IDatabaseObject value) {
             this.key = key;
             this.value = value;
         }
@@ -141,7 +145,7 @@ public class Query {
          * 
          * @return value
          */
-        public DatabaseObject getValue() {
+        public IDatabaseObject getValue() {
             return value;
         }
 

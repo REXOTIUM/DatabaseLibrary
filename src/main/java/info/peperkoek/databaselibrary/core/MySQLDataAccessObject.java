@@ -5,9 +5,8 @@ import java.util.Collection;
 /**
  *
  * @author Rick Pijnenburg - REXOTIUM
- * @email m.a.a.pijnenburg@gmail.com
  */
-class MySQLDataAccessObject implements DataAccessObject {
+class MySQLDataAccessObject extends DataAccessObject {
 
     @Override
     public <T, U> T getObject(Class<T> clazz, U item) {

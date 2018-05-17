@@ -1,16 +1,12 @@
 package info.peperkoek.databaselibrary.core;
 
-
-
-import info.peperkoek.databaselibrary.core.Query;
 import java.util.Collection;
 
 /**
  *
  * @author Rick Pijnenburg - REXOTIUM
- * @email m.a.a.pijnenburg@gmail.com
  */
-class OracleDataAccessObject implements DataAccessObject {
+class OracleDataAccessObject extends DataAccessObject {
 
     @Override
     public <T, U> T getObject(Class<T> clazz, U item) {

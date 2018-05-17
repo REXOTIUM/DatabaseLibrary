@@ -6,7 +6,6 @@ import info.peperkoek.databaselibrary.exceptions.DatabaseRuntimeException;
 /**
  *
  * @author Rick Pijnenburg - REXOTIUM
- * @email m.a.a.pijnenburg@gmail.com
  */
 public final class DatabaseManager {
     private static final String MSSQL_DB = "jdbc:sqlserver://{0};{1}";
@@ -16,11 +15,12 @@ public final class DatabaseManager {
     
     /**
      * 
-     * @param databaseUrl
-     * @param database
-     * @return 
+     * @param databaseUrl The url to the computer/server where the database is hosted
+     * @param database The database manager you need
+     * @return The DataAccessObject that can access the database provided in the database parameter
+     * @see IDataAccessObject
      */
-    public static DataAccessObject getManager(String databaseUrl, Database database) {
+    public static IDataAccessObject getManager(String databaseUrl, Database database) {
         switch(database){
             case MSSQL:
                 return new MSSQLDataAccessObject(String.format(MSSQL_DB, databaseUrl, ""));
@@ -35,13 +35,14 @@ public final class DatabaseManager {
     
     /**
      * 
-     * @param user
-     * @param password
-     * @param databaseUrl
-     * @param database
-     * @return 
+     * @param user Username to login to the database
+     * @param password Password to login to the database
+     * @param databaseUrl The url to the computer/server where the database is hosted
+     * @param database The database manager you need
+     * @return The DataAccessObject that can access the database provided in the database parameter
+     * @see IDataAccessObject
      */
-    public static DataAccessObject getManager(String user, String password, String databaseUrl, Database database) {
+    public static IDataAccessObject getManager(String user, String password, String databaseUrl, Database database) {
         switch(database){
             case MSSQL:
                 String end = "user=" + user + ";password=" + password;
@@ -57,14 +58,15 @@ public final class DatabaseManager {
     
     /**
      * 
-     * @param user
-     * @param password
-     * @param databaseUrl
-     * @param databaseName
-     * @param database
-     * @return 
+     * @param user Username to login to the database
+     * @param password Password to login to the database
+     * @param databaseUrl The url to the computer/server where the database is hosted
+     * @param databaseName The specific name of the database
+     * @param database The database manager you need
+     * @return The DataAccessObject that can access the database provided in the database parameter
+     * @see IDataAccessObject
      */
-    public static DataAccessObject getManager(String user, String password, String databaseUrl, String databaseName, Database database) {
+    public static IDataAccessObject getManager(String user, String password, String databaseUrl, String databaseName, Database database) {
         switch(database){
             case MSSQL:
                 String start = databaseUrl + "\\" + databaseName;
@@ -81,15 +83,16 @@ public final class DatabaseManager {
     
     /**
      * 
-     * @param user
-     * @param password
-     * @param databaseUrl
-     * @param databaseName
-     * @param port
-     * @param database
-     * @return 
+     * @param user Username to login to the database
+     * @param password Password to login to the database
+     * @param databaseUrl The url to the computer/server where the database is hosted
+     * @param databaseName The specific name of the database
+     * @param port The port on which to connect to the database
+     * @param database The database manager you need
+     * @return The DataAccessObject that can access the database provided in the database parameter
+     * @see IDataAccessObject
      */
-    public static DataAccessObject getManager(String user, String password, String databaseUrl, String databaseName, int port, Database database) {
+    public static IDataAccessObject getManager(String user, String password, String databaseUrl, String databaseName, int port, Database database) {
         switch(database){
             case MSSQL:
                 String start = databaseUrl + "\\" + databaseName + ":" + port;
