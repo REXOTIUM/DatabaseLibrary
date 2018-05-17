@@ -1,12 +1,8 @@
-package info.peperkoek.databaselibrary;
+package info.peperkoek.databaselibrary.core;
 
 import info.peperkoek.databaselibrary.annotations.ForeignKey;
 import info.peperkoek.databaselibrary.annotations.LinkTable;
-import info.peperkoek.databaselibrary.core.KeyValue;
-import info.peperkoek.databaselibrary.core.Query;
 import info.peperkoek.databaselibrary.exceptions.DatabaseRuntimeException;
-import info.peperkoek.databaselibrary.interfaces.DataAccessObject;
-import info.peperkoek.databaselibrary.utils.DBUtils;
 import info.peperkoek.databaselibrary.utils.StringUtils;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -31,7 +27,7 @@ import java.util.logging.Logger;
  * @author Rick Pijnenburg - REXOTIUM
  * @email m.a.a.pijnenburg@gmail.com
  */
-public class MSSQLDataAccessObject implements DataAccessObject {
+class MSSQLDataAccessObject implements DataAccessObject {
     private static final Logger LOG = Logger.getLogger(MSSQLDataAccessObject.class.getName());
     private final String connectionString;
     
@@ -39,7 +35,7 @@ public class MSSQLDataAccessObject implements DataAccessObject {
      * 
      * @param connectionString 
      */
-    public MSSQLDataAccessObject(String connectionString) {
+    MSSQLDataAccessObject(String connectionString) {
         this.connectionString = connectionString;
     }
 

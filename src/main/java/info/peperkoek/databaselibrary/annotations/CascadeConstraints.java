@@ -5,10 +5,13 @@ import java.lang.annotation.*;
 /**
  *
  * @author Rick Pijnenburg - REXOTIUM
- * @email m.a.a.pijnenburg@gmail.com
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface CascadeConstraints {
+    /**
+     * 
+     * @return If this will cascade in the database. Default is false.
+     */
     boolean cascade() default false;
 }

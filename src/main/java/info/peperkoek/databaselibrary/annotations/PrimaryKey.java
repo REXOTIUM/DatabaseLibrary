@@ -3,9 +3,9 @@ package info.peperkoek.databaselibrary.annotations;
 import java.lang.annotation.*;
 
 /**
- *
+ * Annotation to let the database manager know this is a primary key.
+ * 
  * @author Rick Pijnenburg - REXOTIUM
- * @email m.a.a.pijnenburg@gmail.com
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)

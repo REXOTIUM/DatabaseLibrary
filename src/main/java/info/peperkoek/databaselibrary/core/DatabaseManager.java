@@ -1,8 +1,7 @@
-package info.peperkoek.databaselibrary;
+package info.peperkoek.databaselibrary.core;
 
 import info.peperkoek.databaselibrary.enums.Database;
 import info.peperkoek.databaselibrary.exceptions.DatabaseRuntimeException;
-import info.peperkoek.databaselibrary.interfaces.DataAccessObject;
 
 /**
  *

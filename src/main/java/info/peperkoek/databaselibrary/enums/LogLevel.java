@@ -6,7 +6,6 @@ package info.peperkoek.databaselibrary.enums;
  * Levels go from debug(lowest) to none(highest)
  * 
  * @author Rick Pijnenburg - REXOTIUM
- * @email m.a.a.pijnenburg@gmail.com
  */
 public enum LogLevel {
     /**

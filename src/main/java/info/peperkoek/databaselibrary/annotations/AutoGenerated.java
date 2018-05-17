@@ -3,9 +3,12 @@ package info.peperkoek.databaselibrary.annotations;
 import java.lang.annotation.*;
 
 /**
- *
+ * Annotation to let the database manager know the value of this field is auto generated in the database.
+ * 
+ * Note: this can only be used with annotation primary key
+ * 
  * @author Rick Pijnenburg - REXOTIUM
- * @email m.a.a.pijnenburg@gmail.com
+ * @see PrimaryKey
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)

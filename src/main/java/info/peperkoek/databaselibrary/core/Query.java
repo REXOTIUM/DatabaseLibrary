@@ -1,7 +1,6 @@
 package info.peperkoek.databaselibrary.core;
 
 import info.peperkoek.databaselibrary.exceptions.DatabaseRuntimeException;
-import info.peperkoek.databaselibrary.interfaces.DatabaseObject;
 import info.peperkoek.databaselibrary.utils.StringUtils;
 import java.util.*;
 

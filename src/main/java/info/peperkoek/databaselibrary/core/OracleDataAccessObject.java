@@ -1,7 +1,8 @@
-package info.peperkoek.databaselibrary;
+package info.peperkoek.databaselibrary.core;
+
+
 
 import info.peperkoek.databaselibrary.core.Query;
-import info.peperkoek.databaselibrary.interfaces.DataAccessObject;
 import java.util.Collection;
 
 /**
@@ -9,7 +10,7 @@ import java.util.Collection;
  * @author Rick Pijnenburg - REXOTIUM
  * @email m.a.a.pijnenburg@gmail.com
  */
-public class MySQLDataAccessObject implements DataAccessObject {
+class OracleDataAccessObject implements DataAccessObject {
 
     @Override
     public <T, U> T getObject(Class<T> clazz, U item) {

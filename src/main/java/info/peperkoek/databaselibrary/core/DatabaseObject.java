@@ -1,4 +1,4 @@
-package info.peperkoek.databaselibrary.interfaces;
+package info.peperkoek.databaselibrary.core;
 
 /**
  *
