@@ -12,6 +12,12 @@ public final class DatabaseManager {
     private static final String MYSQL_DB = "jdbc:mysql://{0};{1}";
     private static final String ORACLE_DB = "jdbc:oracle:thin:@{0};{1}";
     private static final String DEFAULT_ERROR = "Hoe de hel krijg je dit voor elkaar??? ";
+    private static final String USER_STRING = "user=";
+    private static final String PASSWORD_STRING = ";password=";
+    
+    private DatabaseManager() {
+        throw new IllegalAccessError("Factory class");
+    }
     
     /**
      * 
@@ -45,7 +51,7 @@ public final class DatabaseManager {
     public static IDataAccessObject getManager(String user, String password, String databaseUrl, Database database) {
         switch(database){
             case MSSQL:
-                String end = "user=" + user + ";password=" + password;
+                String end = USER_STRING + user + PASSWORD_STRING + password;
                 return new MSSQLDataAccessObject(String.format(MSSQL_DB, databaseUrl, end));
             case ORACLE:
                 
@@ -70,7 +76,7 @@ public final class DatabaseManager {
         switch(database){
             case MSSQL:
                 String start = databaseUrl + "\\" + databaseName;
-                String end = "user=" + user + ";password=" + password;
+                String end = USER_STRING + user + PASSWORD_STRING + password;
                 return new MSSQLDataAccessObject(String.format(MSSQL_DB, start, end));
             case ORACLE:
                 
@@ -96,7 +102,7 @@ public final class DatabaseManager {
         switch(database){
             case MSSQL:
                 String start = databaseUrl + "\\" + databaseName + ":" + port;
-                String end = "user=" + user + ";password=" + password;
+                String end = USER_STRING + user + PASSWORD_STRING + password;
                 return new MSSQLDataAccessObject(String.format(MSSQL_DB, start, end));
             case ORACLE:
                 
