@@ -8,12 +8,17 @@ import info.peperkoek.databaselibrary.exceptions.DatabaseRuntimeException;
  * @author Rick Pijnenburg - REXOTIUM
  */
 public final class DatabaseManager {
+    private static final String EMPTY = "";
+    private static final String COLON = ":";
+    private static final String SLASH = "/";
     private static final String MSSQL_DB = "jdbc:sqlserver://{0};{1}";
-    private static final String MYSQL_DB = "jdbc:mysql://{0};{1}";
-    private static final String ORACLE_DB = "jdbc:oracle:thin:@{0};{1}";
+    private static final String MYSQL_DB = "jdbc:mysql://{0}";
+    private static final String ORACLE_DB = "jdbc:oracle:thin:{0}@{1}:{2}";
     private static final String DEFAULT_ERROR = "Hoe de hel krijg je dit voor elkaar??? ";
-    private static final String USER_STRING = "user=";
-    private static final String PASSWORD_STRING = ";password=";
+    private static final String USER_STRING_MSSQL = "user=";
+    private static final String PASSWORD_STRING_MSSQL = ";password=";
+    private static final String USER_STRING_MYSQL = "?user=";
+    private static final String PASSWORD_STRING_MYSQL = "&password=";
     
     private DatabaseManager() {
         throw new IllegalAccessError("Factory class");
@@ -29,11 +34,11 @@ public final class DatabaseManager {
     public static IDataAccessObject getManager(String databaseUrl, Database database) {
         switch(database){
             case MSSQL:
-                return new MSSQLDataAccessObject(String.format(MSSQL_DB, databaseUrl, ""));
-            case ORACLE:
-                
+                return new MSSQLDataAccessObject(String.format(MSSQL_DB, databaseUrl, EMPTY));
             case MYSQL:
-                
+                return new MySQLDataAccessObject(String.format(MYSQL_DB, databaseUrl));
+            case ORACLE:
+                return new OracleDataAccessObject(String.format(ORACLE_DB, EMPTY, databaseUrl, EMPTY));
             default:
                 throw new DatabaseRuntimeException(DEFAULT_ERROR + database.name());
         }
@@ -51,12 +56,14 @@ public final class DatabaseManager {
     public static IDataAccessObject getManager(String user, String password, String databaseUrl, Database database) {
         switch(database){
             case MSSQL:
-                String end = USER_STRING + user + PASSWORD_STRING + password;
-                return new MSSQLDataAccessObject(String.format(MSSQL_DB, databaseUrl, end));
-            case ORACLE:
-                
+                String endM = USER_STRING_MSSQL + user + PASSWORD_STRING_MSSQL + password;
+                return new MSSQLDataAccessObject(String.format(MSSQL_DB, databaseUrl, endM));
             case MYSQL:
-                
+                String end = USER_STRING_MYSQL + user + PASSWORD_STRING_MYSQL + password; 
+                return new MySQLDataAccessObject(String.format(MYSQL_DB, databaseUrl + end));
+            case ORACLE:
+                String startO = user + SLASH + password;
+                return new OracleDataAccessObject(String.format(ORACLE_DB, startO, databaseUrl, EMPTY));
             default:
                 throw new DatabaseRuntimeException(DEFAULT_ERROR + database.name());
         }
@@ -75,13 +82,15 @@ public final class DatabaseManager {
     public static IDataAccessObject getManager(String user, String password, String databaseUrl, String databaseName, Database database) {
         switch(database){
             case MSSQL:
-                String start = databaseUrl + "\\" + databaseName;
-                String end = USER_STRING + user + PASSWORD_STRING + password;
-                return new MSSQLDataAccessObject(String.format(MSSQL_DB, start, end));
-            case ORACLE:
-                
+                String startM = databaseUrl + "\\" + databaseName;
+                String endM = USER_STRING_MSSQL + user + PASSWORD_STRING_MSSQL + password;
+                return new MSSQLDataAccessObject(String.format(MSSQL_DB, startM, endM));
             case MYSQL:
-                
+                String end = SLASH + databaseName + USER_STRING_MYSQL + user + PASSWORD_STRING_MYSQL + password; 
+                return new MySQLDataAccessObject(String.format(MYSQL_DB, databaseUrl + end));
+            case ORACLE:
+                String startO = user + SLASH + password;
+                return new OracleDataAccessObject(String.format(ORACLE_DB, startO, databaseUrl, databaseName));
             default:
                 throw new DatabaseRuntimeException(DEFAULT_ERROR + database.name());
         }
@@ -101,13 +110,16 @@ public final class DatabaseManager {
     public static IDataAccessObject getManager(String user, String password, String databaseUrl, String databaseName, int port, Database database) {
         switch(database){
             case MSSQL:
-                String start = databaseUrl + "\\" + databaseName + ":" + port;
-                String end = USER_STRING + user + PASSWORD_STRING + password;
-                return new MSSQLDataAccessObject(String.format(MSSQL_DB, start, end));
-            case ORACLE:
-                
+                String startM = databaseUrl + "\\" + databaseName + COLON + port;
+                String endM = USER_STRING_MSSQL + user + PASSWORD_STRING_MSSQL + password;
+                return new MSSQLDataAccessObject(String.format(MSSQL_DB, startM, endM));
             case MYSQL:
-                
+                String end = COLON + port + SLASH + databaseName + USER_STRING_MYSQL + user + PASSWORD_STRING_MYSQL + password;
+                return new MySQLDataAccessObject(String.format(MYSQL_DB, databaseUrl + end));
+            case ORACLE:
+                String startO = user + SLASH + password;
+                String endO = port + COLON + databaseName;
+                return new OracleDataAccessObject(String.format(ORACLE_DB, startO, databaseUrl, endO));
             default:
                 throw new DatabaseRuntimeException(DEFAULT_ERROR + database.name());
         }
