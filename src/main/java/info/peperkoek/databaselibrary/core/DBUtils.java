@@ -87,33 +87,23 @@ final class DBUtils {
      */
     static <T> KeyValue getPrimaryKey(T item) {
         KeyValue output = new KeyValue();
-        Field[] fields = getAllFields(item.getClass());
-        for (Field f : fields) {
-            if (!f.isAnnotationPresent(PrimaryKey.class)) {
-                continue;
-            }
-            String s = f.getName();
-            if (f.isAnnotationPresent(Map.class)) {
-                output.setKey(f.getAnnotation(Map.class).mapping());
-            } else {
-                output.setKey(s);
-            }
-            if (Modifier.isPublic(f.getModifiers())) {
-                try {
-                    output.setValue(objectToString(f.get(item), false));
-                    return output;
-                } catch (IllegalArgumentException | IllegalAccessException ex) {
-                    LOG.log(Level.SEVERE, null, ex);
-                }
-            }
-            s = ((f.getType() == boolean.class) ? IS : GET) + firstToUpper(s);
+        Field f = getPrimaryKeyField(item.getClass());
+        output.setKey(getKeyName(f));
+        if (Modifier.isPublic(f.getModifiers())) {
             try {
-                Method m = item.getClass().getMethod(s, (Class<?>[]) null);
-                output.setValue(objectToString(m.invoke(item, (Object[]) null), false));
+                output.setValue(objectToString(f.get(item), false));
                 return output;
-            } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            } catch (IllegalArgumentException | IllegalAccessException ex) {
                 LOG.log(Level.SEVERE, null, ex);
             }
+        }
+        String s = getMethodName(f);
+        try {
+            Method m = item.getClass().getMethod(s, (Class<?>[]) null);
+            output.setValue(objectToString(m.invoke(item, (Object[]) null), false));
+            return output;
+        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            LOG.log(Level.SEVERE, null, ex);
         }
         throw new DatabaseRuntimeException(MISSING_PK + item.getClass());
     }
@@ -142,27 +132,22 @@ final class DBUtils {
      * @return String representation of the primary key value
      */
     static <T> String getPrimaryKeyValue(T item) {
-        Field[] fields = getAllFields(item.getClass());
-        for (Field f : fields) {
-            if (!f.isAnnotationPresent(PrimaryKey.class)) {
-                continue;
-            }
-            if (Modifier.isPublic(f.getModifiers())) {
-                try {
-                    return objectToString(f.get(item), false);
-                } catch (IllegalArgumentException | IllegalAccessException ex) {
-                    LOG.log(Level.SEVERE, null, ex);
-                }
-            }
-            String s = ((f.getType() == boolean.class) ? IS : GET) + firstToUpper(f.getName());
+        Field f = getPrimaryKeyField(item.getClass());
+        if (Modifier.isPublic(f.getModifiers())) {
             try {
-                Method m = item.getClass().getMethod(s, (Class<?>[]) null);
-                return objectToString(m.invoke(item, (Object[]) null), false);
-            } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+                return objectToString(f.get(item), false);
+            } catch (IllegalArgumentException | IllegalAccessException ex) {
                 LOG.log(Level.SEVERE, null, ex);
             }
         }
-        throw new DatabaseRuntimeException(MISSING_PK + item.getClass());
+        String s = getMethodName(f);
+        try {
+            Method m = item.getClass().getMethod(s, (Class<?>[]) null);
+            return objectToString(m.invoke(item, (Object[]) null), false);
+        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            LOG.log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
     
     /**

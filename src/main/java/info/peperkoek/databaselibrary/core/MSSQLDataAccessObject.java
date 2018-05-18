@@ -364,24 +364,40 @@ class MSSQLDataAccessObject extends DataAccessObject {
         if(field.getType().isArray()) {
             Object object = DBUtils.getLinkItem(item, field);
             int length = java.lang.reflect.Array.getLength(object);
-            for(int i = 0; i < length; i++) {
-                Object o = java.lang.reflect.Array.get(object, i);
-                if(!insertLinkTableItem(o, tablename, column1, id1))
-                    return false;
-            }
-            return true;
+            return insertLinkTableArray(object, length, tablename, column1, id1);
         } else if(Iterable.class.isAssignableFrom(field.getType())) {
             Iterator iterator = ((Iterable) DBUtils.getLinkItem(item, field)).iterator();
-            while(iterator.hasNext()) {
-                Object o = iterator.next();
-                if(!insertLinkTableItem(o, tablename, column1, id1))
-                    return false;
-            }
-            return true;
+            return insertLinkTableCollection(iterator, tablename, column1, id1);
         } else {
             Object o = DBUtils.getLinkItem(item, field);
             return insertLinkTableItem(o, tablename, column1, id1);
         }
+    }
+    
+    private boolean insertLinkTableArray(Object array, int length, String tablename, String column1, String id1) {
+        for(int i = 0; i < length; i++) {
+            Object o = java.lang.reflect.Array.get(array, i);
+            if(!insertLinkTableItem(o, tablename, column1, id1))
+                return false;
+        }
+        return true;
+    }
+    
+    /**
+     * 
+     * @param iterator
+     * @param tablename
+     * @param column1
+     * @param id1
+     * @return 
+     */
+    private boolean insertLinkTableCollection(Iterator iterator, String tablename, String column1, String id1) {
+        while(iterator.hasNext()) {
+            Object o = iterator.next();
+            if(!insertLinkTableItem(o, tablename, column1, id1))
+                return false;
+        }
+        return true;
     }
     
     /**
