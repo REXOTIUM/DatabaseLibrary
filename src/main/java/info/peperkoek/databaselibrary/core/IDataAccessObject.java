@@ -1,5 +1,6 @@
 package info.peperkoek.databaselibrary.core;
 
+import info.peperkoek.databaselibrary.enums.LogLevel;
 import java.util.Collection;
 
 /**
@@ -150,4 +151,10 @@ public interface IDataAccessObject {
      * @return True if all items are deleted, false otherwise
      */
     public <T> boolean removeObjects(Collection<T> obj);
+    
+    /**
+     * 
+     * @param level The level at which the database access object will log messages
+     */
+    public void setLogLevel(LogLevel level);
 }
