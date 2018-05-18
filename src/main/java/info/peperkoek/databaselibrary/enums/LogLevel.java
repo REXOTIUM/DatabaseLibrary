@@ -21,6 +21,10 @@ public enum LogLevel {
      */
     QUERY,
     /**
+     * Only error messages can be found in the logs.
+     */
+    SEVERE,
+    /**
      * The database managers dont log anything (exceptions that occur in any util classes will still be shown).
      */
     NONE 
