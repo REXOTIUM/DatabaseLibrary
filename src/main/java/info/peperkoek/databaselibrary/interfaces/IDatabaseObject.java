@@ -1,4 +1,4 @@
-package info.peperkoek.databaselibrary.core;
+package info.peperkoek.databaselibrary.interfaces;
 
 /**
  * Interface for easier convertions to database values.

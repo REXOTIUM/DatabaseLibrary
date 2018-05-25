@@ -1,5 +1,8 @@
 package info.peperkoek.databaselibrary.core;
 
+import info.peperkoek.databaselibrary.interfaces.IDataAccessObject;
+import info.peperkoek.databaselibrary.utils.KeyValue;
+import info.peperkoek.databaselibrary.utils.Query;
 import info.peperkoek.databaselibrary.annotations.ForeignKey;
 import info.peperkoek.databaselibrary.annotations.LinkTable;
 import info.peperkoek.databaselibrary.enums.LogLevel;
@@ -24,10 +27,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * A Data Access Object. Use for accessing data in the database.
+ * 
  * @author Rick Pijnenburg - REXOTIUM
  */
-abstract class DataAccessObject implements IDataAccessObject {
+public abstract class DataAccessObject implements IDataAccessObject {
     protected static final String A = "A.";
     protected static final String EMPTY = "";
     protected static final String ID = "_id";
@@ -37,8 +41,6 @@ abstract class DataAccessObject implements IDataAccessObject {
     protected static final String MISSING_PK = "Primary key can not be found. Is annotation PrimaryKey applied?";
     protected static final String NO_VALID_CONSTRUCTOR = "Cannot find empty public constructor. Empty meaning no arguments.";
     protected static final String SELECT_ALL = "SELECT %s FROM %s";
-    protected static final String SELECT_ID = "SELECT id FROM %s";
-    protected static final String SELECT_ID_WHERE = "SELECT id FROM %s WHERE %s";
     protected static final String SELECT_WHERE = "SELECT %s FROM %s WHERE %s";
     protected static final String SELECT_WHERE_PK = "SELECT %s FROM %s WHERE %s = %s";
     protected static final String SELECT_TOP_MSSQL = "SELECT TOP %s %s FROM %s";
@@ -50,6 +52,7 @@ abstract class DataAccessObject implements IDataAccessObject {
     protected static final String DELETE_ITEM = "DELETE FROM %s WHERE %s";
     protected static final String INSERT_ITEM = "INSERT INTO %s (%s) VALUES (%s)";
     protected static final String INSERT_ITEM_OUTPUT_MSSQL = "INSERT INTO %s (%s) OUTPUT INSERTED.%s VALUES (%s)";
+    protected static final String INSERT_ITEM_OUTPUT_ORACLE = "INSERT INTO %s (%s) VALUES (%s)";
     protected static final String UPDATE_ITEM = "UPDATE %s SET %s WHERE %s";
     protected static final String INSERT_LINK_TABLE = "INSERT INTO %s (%s, %s) VALUES (%s, %s)";
     protected static final String SELECT_LINK_TABLE = "SELECT * from %s A join %s B on A.%s = B.%s where %s";
@@ -60,12 +63,30 @@ abstract class DataAccessObject implements IDataAccessObject {
     /**
      * 
      * @param connectionString The string to establish the connection to the database
-     * @param log The logger to log messages in.
+     * @param logger The logger to log messages in.
      */
     protected DataAccessObject(String connectionString, Logger logger) {
         this.connectionString = connectionString;
         this.logger = logger;
         this.logLevel = LogLevel.DEBUG;
+    }
+    
+    @Override
+    public <T> boolean doesObjectExist(T item) {
+        String table = DBUtils.getTableName(item.getClass());
+        List<KeyValue> kvs = DBUtils.getFields(item, false);
+        String field = DBUtils.getPrimaryKeyName(item.getClass());
+        StringBuilder set = StringUtils.createString(kvs, EQUALS, AND);
+        if (set.length() > 5) {
+            set.delete(set.length() - 5, set.length());
+        }
+        String sql;
+        if (set.length() > 0) {
+            sql = String.format(SELECT_WHERE, field, table, set.toString());
+        } else {
+            sql = String.format(SELECT_ALL, field, table);
+        }
+        return !query(sql).isEmpty();
     }
     
     @Override
@@ -80,61 +101,31 @@ abstract class DataAccessObject implements IDataAccessObject {
 
     @Override
     public <T> Collection<T> getObjects(Class<T> clazz) {
-        Collection<T> output = new ArrayList<>();
-        try {
-            Constructor<T> constructor = clazz.getConstructor((Class<?>[]) null);
-            String table = DBUtils.getTableName(clazz);
-            String sql = String.format(SELECT_ALL, DBUtils.getColumnString(clazz), table);
-            for (Map<String, String> map : query(sql)) {
-                output.add(toInstance(constructor, map));
-            }
-            return output;
-        } catch (NoSuchMethodException | SecurityException ex) {
-            log(Level.SEVERE, NO_VALID_CONSTRUCTOR, ex);
-            return output;
-        }
+        String table = DBUtils.getTableName(clazz);
+        String sql = String.format(SELECT_ALL, DBUtils.getColumnString(clazz), table);
+        return queryToObject(clazz, sql);
     }
     
     @Override
     public <T, U> Collection<T> getObjects(Class<T> clazz, U item) {
-        Collection<T> output = new ArrayList<>();
-        try {
-            Constructor<T> constructor = clazz.getConstructor((Class<?>[]) null);
-            String table = DBUtils.getTableName(clazz);
-            List<KeyValue> kvs = DBUtils.getFields(item, false);
-            StringBuilder set = StringUtils.createString(kvs, EQUALS, AND);
-            if (set.length() > 5) {
-                set.delete(set.length() - 5, set.length());
-            }
-            String sql;
-            if (set.length() > 0) {
-                sql = String.format(SELECT_WHERE, DBUtils.getColumnString(clazz), table, set.toString());
-            } else {
-                sql = String.format(SELECT_ALL, DBUtils.getColumnString(clazz), table);
-            }
-            for (Map<String, String> map : query(sql)) {
-                output.add(toInstance(constructor, map));
-            }
-            return output;
-        } catch (NoSuchMethodException | SecurityException ex) {
-            log(Level.SEVERE, NO_VALID_CONSTRUCTOR, ex);
-            return output;
+        String table = DBUtils.getTableName(clazz);
+        List<KeyValue> kvs = DBUtils.getFields(item, false);
+        StringBuilder set = StringUtils.createString(kvs, EQUALS, AND);
+        if (set.length() > 5) {
+            set.delete(set.length() - 5, set.length());
         }
+        String sql;
+        if (set.length() > 0) {
+            sql = String.format(SELECT_WHERE, DBUtils.getColumnString(clazz), table, set.toString());
+        } else {
+            sql = String.format(SELECT_ALL, DBUtils.getColumnString(clazz), table);
+        }
+        return queryToObject(clazz, sql);
     }
 
     @Override
     public <T> Collection<T> getObjects(Class<T> clazz, Query query) {
-        Collection<T> output = new ArrayList<>();
-        try {
-            Constructor<T> constructor = clazz.getConstructor((Class<?>[]) null);
-            for (Map<String, String> map : query(query.getQuery())) {
-                output.add(toInstance(constructor, map));
-            }
-            return output;
-        } catch (NoSuchMethodException | SecurityException ex) {
-            log(Level.SEVERE, NO_VALID_CONSTRUCTOR, ex);
-            return output;
-        }
+        return queryToObject(clazz, query.getQuery());
     }
     
     @Override
@@ -433,7 +424,7 @@ abstract class DataAccessObject implements IDataAccessObject {
     
     /**
      * 
-     * @param query The query to execute
+     * @param sql The query to execute
      * @return List with a map that maps the key (columheader) to the value.
      */
     protected List<Map<String, String>> query(String sql) {
@@ -648,5 +639,26 @@ abstract class DataAccessObject implements IDataAccessObject {
                 loglevel = Level.ALL.intValue();
         }
         return level.intValue() >= loglevel;
+    }
+    
+    /**
+     * 
+     * @param <T> The type of the class
+     * @param clazz The class of the objects to return
+     * @param query The query to execute
+     * @return A collection with the objects of class clazz which 
+     */
+    private <T> Collection<T> queryToObject(Class<T> clazz, String query) {
+        Collection<T> output = new ArrayList<>();
+        try {
+            Constructor<T> constructor = clazz.getConstructor((Class<?>[]) null);
+            for (Map<String, String> map : query(query)) {
+                output.add(toInstance(constructor, map));
+            }
+            return output;
+        } catch (NoSuchMethodException | SecurityException ex) {
+            log(Level.SEVERE, NO_VALID_CONSTRUCTOR, ex);
+            return output;
+        }
     }
 }

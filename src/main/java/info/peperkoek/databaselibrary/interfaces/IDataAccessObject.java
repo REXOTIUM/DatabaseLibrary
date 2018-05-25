@@ -1,5 +1,6 @@
-package info.peperkoek.databaselibrary.core;
+package info.peperkoek.databaselibrary.interfaces;
 
+import info.peperkoek.databaselibrary.utils.Query;
 import info.peperkoek.databaselibrary.enums.LogLevel;
 import java.util.Collection;
 
@@ -9,6 +10,14 @@ import java.util.Collection;
  * @author Rick Pijnenburg - REXOTIUM
  */
 public interface IDataAccessObject {
+    
+    /**
+     * Checks if the database holds records of items that match the fields whith values in item
+     * @param <T> The type of the item
+     * @param item The item with the fields
+     * @return True if the database has records which match the item
+     */
+    public <T> boolean doesObjectExist(T item);
     
     /**
      * Returns a object that statisfies the query constructed with the item.

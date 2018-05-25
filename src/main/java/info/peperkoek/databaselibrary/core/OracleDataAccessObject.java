@@ -1,5 +1,6 @@
 package info.peperkoek.databaselibrary.core;
 
+import info.peperkoek.databaselibrary.utils.KeyValue;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
