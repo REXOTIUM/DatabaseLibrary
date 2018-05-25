@@ -51,7 +51,6 @@ public abstract class DataAccessObject implements IDataAccessObject {
     protected static final String DELETE_ITEM = "DELETE FROM %s WHERE %s";
     protected static final String INSERT_ITEM = "INSERT INTO %s (%s) VALUES (%s)";
     protected static final String INSERT_ITEM_OUTPUT_MSSQL = "INSERT INTO %s (%s) OUTPUT INSERTED.%s VALUES (%s)";
-    protected static final String INSERT_ITEM_OUTPUT_ORACLE = "INSERT INTO %s (%s) VALUES (%s)";
     protected static final String UPDATE_ITEM = "UPDATE %s SET %s WHERE %s";
     protected static final String INSERT_LINK_TABLE = "INSERT INTO %s (%s, %s) VALUES (%s, %s)";
     protected static final String SELECT_LINK_TABLE = "SELECT * from %s A join %s B on A.%s = B.%s where %s";

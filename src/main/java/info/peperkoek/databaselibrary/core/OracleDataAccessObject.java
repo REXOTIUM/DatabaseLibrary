@@ -38,10 +38,10 @@ class OracleDataAccessObject extends DataAccessObject {
         columns.delete(columns.length() - 2, columns.length()); //remove excess comma
         values.delete(values.length() - 2, values.length()); //remove excess comma
         if(pkAutoGen) {
-            String sql = String.format(INSERT_ITEM_OUTPUT_MSSQL, table, columns.toString(), DBUtils.getPrimaryKey(obj), values.toString());
+            String sql = String.format(INSERT_ITEM, table, columns.toString(), DBUtils.getPrimaryKey(obj), values.toString());
             if(!DBUtils.hasLinkTable(obj.getClass()))
-                return insertQuery(obj, sql, true);
-            return insertQuery(obj, sql, true) && insertLinkTable(obj);
+                return insertQuery(obj, sql, false);
+            return insertQuery(obj, sql, false) && insertLinkTable(obj);
         } else {
             String sql = String.format(INSERT_ITEM, table, columns.toString(), values.toString());
             if(!DBUtils.hasLinkTable(obj.getClass()))

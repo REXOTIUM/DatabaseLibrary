@@ -6,6 +6,10 @@ package info.peperkoek.databaselibrary.utils;
  */
 public class EqualsUtils {
     
+    private EqualsUtils() {
+        throw new IllegalStateException("Utility class");
+    }
+    
     /**
      * 
      * @param self The object calling this function
