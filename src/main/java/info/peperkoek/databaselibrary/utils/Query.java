@@ -1,7 +1,7 @@
-package info.peperkoek.databaselibrary.core;
+package info.peperkoek.databaselibrary.utils;
 
+import info.peperkoek.databaselibrary.interfaces.IDatabaseObject;
 import info.peperkoek.databaselibrary.exceptions.DatabaseRuntimeException;
-import info.peperkoek.databaselibrary.utils.StringUtils;
 import java.util.*;
 
 /**
@@ -97,14 +97,9 @@ public class Query {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
+        Boolean b = EqualsUtils.checkObject(this, obj);
+        if(b != null) {
+            return b;
         }
         final Query other = (Query) obj;
         if (this.maxPlaces != other.maxPlaces) {
@@ -159,14 +154,9 @@ public class Query {
 
         @Override
         public boolean equals(Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
-                return false;
+            Boolean b = EqualsUtils.checkObject(this, obj);
+            if(b != null) {
+                return b;
             }
             final QueryKeyValue other = (QueryKeyValue) obj;
             if (this.key != other.key) {

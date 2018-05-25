@@ -1,5 +1,6 @@
 package info.peperkoek.databaselibrary.core;
 
+import info.peperkoek.databaselibrary.utils.KeyValue;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

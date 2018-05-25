@@ -1,5 +1,7 @@
 package info.peperkoek.databaselibrary.core;
 
+import info.peperkoek.databaselibrary.interfaces.IDatabaseObject;
+import info.peperkoek.databaselibrary.utils.KeyValue;
 import info.peperkoek.databaselibrary.annotations.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
