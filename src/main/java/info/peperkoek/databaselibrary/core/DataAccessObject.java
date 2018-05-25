@@ -32,7 +32,6 @@ import java.util.logging.Logger;
  * @author Rick Pijnenburg - REXOTIUM
  */
 public abstract class DataAccessObject implements IDataAccessObject {
-    protected static final String A = "A.";
     protected static final String EMPTY = "";
     protected static final String ID = "_id";
     protected static final String EQUALS = " = ";
