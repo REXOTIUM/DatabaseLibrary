@@ -11,9 +11,9 @@ public final class DatabaseManager {
     private static final String EMPTY = "";
     private static final String COLON = ":";
     private static final String SLASH = "/";
-    private static final String MSSQL_DB = "jdbc:sqlserver://{0};{1}";
-    private static final String MYSQL_DB = "jdbc:mysql://{0}";
-    private static final String ORACLE_DB = "jdbc:oracle:thin:{0}@{1}:{2}";
+    private static final String MSSQL_DB = "jdbc:sqlserver://%s;%s";
+    private static final String MYSQL_DB = "jdbc:mysql://%s";
+    private static final String ORACLE_DB = "jdbc:oracle:thin:%s@%s:%s";
     private static final String DEFAULT_ERROR = "Hoe de hel krijg je dit voor elkaar??? ";
     private static final String USER_STRING_MSSQL = "user=";
     private static final String PASSWORD_STRING_MSSQL = ";password=";
