@@ -43,6 +43,8 @@ final class DBUtils {
     static <T> String getColumnString(Class<T> clazz) {
         StringBuilder output = new StringBuilder();
         for(Field f : getAllFields(clazz)) {
+            if(f.isAnnotationPresent(Ignore.class) || f.isAnnotationPresent(LinkTable.class))
+                continue;
             output.append(getKeyName(f));
             output.append(", ");
         }
@@ -364,6 +366,8 @@ final class DBUtils {
     private static String getKeyName(Field f) {
         if (f.isAnnotationPresent(Map.class)) {
             return f.getAnnotation(Map.class).mapping();
+        } else if(f.isAnnotationPresent(ForeignKey.class)) {
+            return getTableName(f.getType()) + ID;
         } else {
             return f.getName();
         }
@@ -463,7 +467,10 @@ final class DBUtils {
             return nullable ? "null" :EMPTY;
         }
         Class<?> c = o.getClass();
-        if (o instanceof IDatabaseObject) {
+        if (o.getClass().isEnum()) {
+            Enum e = (Enum) o;
+            return APPA + e.name() + APPA;
+        } else if (o instanceof IDatabaseObject) {
             IDatabaseObject obj = (IDatabaseObject) o;
             return APPA + obj.toDatabaseString() + APPA;
         } else if (c == Boolean.class) {
@@ -496,6 +503,8 @@ final class DBUtils {
             return Long.parseLong(value);
         } else if (c == Boolean.class || c == boolean.class) {
             return "y".equals(value);
+        } else if(c.isEnum()) {
+            return Enum.valueOf(c, value);
         } else if (IDatabaseObject.class.isAssignableFrom(c)) {
             try {
                 IDatabaseObject obj = (IDatabaseObject) c.newInstance();

@@ -53,7 +53,7 @@ public abstract class DataAccessObject implements IDataAccessObject {
     protected static final String INSERT_ITEM_OUTPUT_MSSQL = "INSERT INTO %s (%s) OUTPUT INSERTED.%s VALUES (%s)";
     protected static final String UPDATE_ITEM = "UPDATE %s SET %s WHERE %s";
     protected static final String INSERT_LINK_TABLE = "INSERT INTO %s (%s, %s) VALUES (%s, %s)";
-    protected static final String SELECT_LINK_TABLE = "SELECT * from %s A join %s B on A.%s = B.%s where %s";
+    protected static final String SELECT_LINK_TABLE = "SELECT %s from %s A join %s B on A.%s = B.%s where %s";
     protected final String connectionString;
     protected final Logger logger;
     protected LogLevel logLevel;
@@ -580,11 +580,12 @@ public abstract class DataAccessObject implements IDataAccessObject {
      */
     private <T, U> Collection<T> getLinkItems(Class<T> clazz, U item, String linktable) {
         Collection<T> output = new ArrayList<>();
+        String columnnames = DBUtils.getColumnString(clazz);
         String table = DBUtils.getTableName(clazz);
-        String pk = DBUtils.getPrimaryKeyValue(clazz);
+        String pk = DBUtils.getPrimaryKeyName(clazz);
         String column = DBUtils.getTableName(item.getClass()) + ID;
         KeyValue kv = DBUtils.getPrimaryKey(item);
-        String sql = String.format(SELECT_LINK_TABLE, table, linktable, pk, table + ID, column + EQUALS + kv.getValue());
+        String sql = String.format(SELECT_LINK_TABLE, columnnames, table, linktable, pk, table + ID, column + EQUALS + kv.getValue());
         try {
             Constructor<T> constructor = clazz.getConstructor((Class<?>[]) null);
             for (Map<String, String> map : query(sql)) {
