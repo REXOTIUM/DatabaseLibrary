@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 final class DBUtils {
     private static final Logger LOG = Logger.getLogger(DBUtils.class.getName());
     private static final String EMPTY = "";
+    private static final String NULL = "";
     private static final String ID = "_id";
     private static final String IS = "is";
     private static final String GET = "get";
@@ -413,7 +414,7 @@ final class DBUtils {
         if(o == null && nullable) {
             KeyValue kv = new KeyValue();
             kv.setKey(getTableName(f.getType()) + ID);
-            kv.setValue("null");
+            kv.setValue(NULL);
             return kv;
         } else if (o != null) {
             String name = getTableName(o.getClass()) + ID;
@@ -464,7 +465,7 @@ final class DBUtils {
      */
     private static String objectToString(Object o, boolean nullable) {
         if (o == null) {
-            return nullable ? "null" :EMPTY;
+            return nullable ? NULL :EMPTY;
         }
         Class<?> c = o.getClass();
         if (o.getClass().isEnum()) {
