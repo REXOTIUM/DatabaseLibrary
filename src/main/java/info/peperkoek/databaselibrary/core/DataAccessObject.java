@@ -70,6 +70,31 @@ public abstract class DataAccessObject implements IDataAccessObject {
     }
     
     @Override
+    public <T> String getID(T item) {
+        String table = DBUtils.getTableName(item.getClass());
+        List<KeyValue> kvs = DBUtils.getFields(item, false);
+        String field = DBUtils.getPrimaryKeyName(item.getClass());
+        StringBuilder set = StringUtils.createString(kvs, EQUALS, AND);
+        if (set.length() > 5) {
+            set.delete(set.length() - 5, set.length());
+        }
+        String sql;
+        if (set.length() > 0) {
+            sql = String.format(SELECT_WHERE, field, table, set.toString());
+        } else {
+            sql = String.format(SELECT_ALL, field, table);
+        }
+        List<Map<String, String>> result = query(sql);
+        if(!result.isEmpty()) {
+            Map<String, String> pk = result.get(0);
+            if(!pk.isEmpty()) {
+                return pk.get(field);
+            }
+        }
+        return null;
+    }
+    
+    @Override
     public <T> boolean doesObjectExist(T item) {
         String table = DBUtils.getTableName(item.getClass());
         List<KeyValue> kvs = DBUtils.getFields(item, false);
@@ -293,9 +318,14 @@ public abstract class DataAccessObject implements IDataAccessObject {
      * @return 
      */
     private boolean insertLinkTableItem(Object o, String tablename, String column1, String id1) {
-        if(!insertObject(o))
-            return false;
-        String id2 = DBUtils.getPrimaryKeyValue(o);
+        String id2;
+        if(doesObjectExist(o)) {
+            id2 = getID(o);
+        } else {
+            if(!insertObject(o))
+                return false;
+            id2 = DBUtils.getPrimaryKeyValue(o);
+        }
         log(Level.FINEST, "Insert link table item: Id of object: " + o, id2);
         String column2 = DBUtils.getTableName(o.getClass()) + ID;
         log(Level.FINEST, "Insert link table item: Columnname child: ", column2);

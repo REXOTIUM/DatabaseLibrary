@@ -12,6 +12,14 @@ import java.util.Collection;
 public interface IDataAccessObject {
     
     /**
+     * Gets the id of an item as a string
+     * @param <T> The type of the item
+     * @param item The item with the fields
+     * @return The id of a item that matches the item or null if nothing matches
+     */
+    public <T> String getID(T item);
+    
+    /**
      * Checks if the database holds records of items that match the fields whith values in item
      * @param <T> The type of the item
      * @param item The item with the fields
