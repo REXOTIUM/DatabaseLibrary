@@ -8,6 +8,4 @@
 [![Javadocs](http://javadoc.io/badge/info.peperkoek/database-library.svg)](http://javadoc.io/doc/info.peperkoek/database-library)
 [![Sonarqube](http://217.103.125.171:1111/api/project_badges/measure?project=info.peperkoek%3Adatabase-library&metric=alert_status)](http://217.103.125.171:1111/dashboard?id=info.peperkoek%3Adatabase-library)
 
-Access the sonarqube version on http://sonarqube.peperkoek.info/
-
 For use with oracle databases please get your [own oracle jdbc](https://blogs.oracle.com/dev2dev/get-oracle-jdbc-drivers-and-ucp-from-oracle-maven-repository-without-ides)
