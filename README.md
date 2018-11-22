@@ -6,7 +6,7 @@
 [![codebeat badge](https://codebeat.co/badges/b8b65185-4026-4cf0-91ff-20d81e4167cf)](https://codebeat.co/projects/github-com-rexotium-databaselibrary-master)
 [![BCH compliance](https://bettercodehub.com/edge/badge/REXOTIUM/DatabaseLibrary?branch=master)](https://bettercodehub.com/)
 [![Javadocs](http://javadoc.io/badge/info.peperkoek/database-library.svg)](http://javadoc.io/doc/info.peperkoek/database-library)
-[![Sonarqube](http://217.103.125.171:1111/api/project_badges/measure?project=info.peperkoek%3Adatabase-library&metric=alert_status)
+[![Sonarqube](http://217.103.125.171:1111/api/project_badges/measure?project=info.peperkoek%3Adatabase-library&metric=alert_status)](http://217.103.125.171:1111/dashboard?id=info.peperkoek%3Adatabase-library)
 
 Access the sonarqube version on http://sonarqube.peperkoek.info/
 
