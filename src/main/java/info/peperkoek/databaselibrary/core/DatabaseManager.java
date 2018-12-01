@@ -10,11 +10,13 @@ import info.peperkoek.databaselibrary.exceptions.DatabaseRuntimeException;
 public final class DatabaseManager {
     private static final String EMPTY = "";
     private static final String COLON = ":";
+    private static final String SEMICOLON = ";";
     private static final String SLASH = "/";
     private static final String MSSQL_DB = "jdbc:sqlserver://%s;%s";
     private static final String MYSQL_DB = "jdbc:mysql://%s";
     private static final String ORACLE_DB = "jdbc:oracle:thin:%s@%s:%s";
     private static final String DEFAULT_ERROR = "Hoe de hel krijg je dit voor elkaar??? ";
+    private static final String DATABASE_NAME_MSSQL = "databaseName=";
     private static final String USER_STRING_MSSQL = "user=";
     private static final String PASSWORD_STRING_MSSQL = ";password=";
     private static final String USER_STRING_MYSQL = "?user=";
@@ -82,9 +84,8 @@ public final class DatabaseManager {
     public static DataAccessObject getManager(String user, String password, String databaseUrl, String databaseName, Database database) {
         switch(database){
             case MSSQL:
-                String startM = databaseUrl + "\\" + databaseName;
-                String endM = USER_STRING_MSSQL + user + PASSWORD_STRING_MSSQL + password;
-                return new MSSQLDataAccessObject(String.format(MSSQL_DB, startM, endM));
+                String endM = DATABASE_NAME_MSSQL + databaseName + SEMICOLON + USER_STRING_MSSQL + user + PASSWORD_STRING_MSSQL + password;
+                return new MSSQLDataAccessObject(String.format(MSSQL_DB, databaseUrl, endM));
             case MYSQL:
                 String end = SLASH + databaseName + USER_STRING_MYSQL + user + PASSWORD_STRING_MYSQL + password; 
                 return new MySQLDataAccessObject(String.format(MYSQL_DB, databaseUrl + end));
@@ -110,8 +111,8 @@ public final class DatabaseManager {
     public static DataAccessObject getManager(String user, String password, String databaseUrl, String databaseName, int port, Database database) {
         switch(database){
             case MSSQL:
-                String startM = databaseUrl + "\\" + databaseName + COLON + port;
-                String endM = USER_STRING_MSSQL + user + PASSWORD_STRING_MSSQL + password;
+                String startM = databaseUrl + COLON + port;
+                String endM = DATABASE_NAME_MSSQL + databaseName + SEMICOLON + USER_STRING_MSSQL + user + PASSWORD_STRING_MSSQL + password;
                 return new MSSQLDataAccessObject(String.format(MSSQL_DB, startM, endM));
             case MYSQL:
                 String end = COLON + port + SLASH + databaseName + USER_STRING_MYSQL + user + PASSWORD_STRING_MYSQL + password;

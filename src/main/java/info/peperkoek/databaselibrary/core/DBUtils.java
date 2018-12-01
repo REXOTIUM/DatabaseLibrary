@@ -44,7 +44,7 @@ final class DBUtils {
     static <T> String getColumnString(Class<T> clazz) {
         StringBuilder output = new StringBuilder();
         for(Field f : getAllFields(clazz)) {
-            if(f.isAnnotationPresent(Ignore.class) || f.isAnnotationPresent(LinkTable.class))
+            if(f.isAnnotationPresent(Ignore.class) || f.isAnnotationPresent(LinkTable.class) || f.isSynthetic())
                 continue;
             output.append(getKeyName(f));
             output.append(", ");
@@ -180,7 +180,7 @@ final class DBUtils {
         List<KeyValue> output = new ArrayList<>();
         Field[] fields = getAllFields(item.getClass());
         for (Field f : fields) {
-            if (f.isAnnotationPresent(Ignore.class) || (f.isAnnotationPresent(PrimaryKey.class) && ignorePK) || f.isAnnotationPresent(LinkTable.class)) {
+            if (f.isAnnotationPresent(Ignore.class) || (f.isAnnotationPresent(PrimaryKey.class) && ignorePK) || f.isAnnotationPresent(LinkTable.class) || f.isSynthetic()) {
                 continue;
             }
             boolean foreign = f.isAnnotationPresent(ForeignKey.class);

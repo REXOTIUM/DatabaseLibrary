@@ -12,7 +12,7 @@ public class Query {
     public static final String QUERY_PARAMETER_PLACEHOLDER = ":-:";
     private final String statement;
     private final int maxPlaces;
-    private Collection<QueryKeyValue> elements;
+    private final Collection<QueryKeyValue> elements;
     
     /**
      * Constructs a query with a statement that is to be executed by the DAO
@@ -24,6 +24,7 @@ public class Query {
     public Query(String statement) {
         this.statement = statement;
         this.maxPlaces = StringUtils.count(statement, QUERY_PARAMETER_PLACEHOLDER);
+        elements = new ArrayList<>();
     }
     
     /**
@@ -41,22 +42,28 @@ public class Query {
      * @return complete query
      */
     public String getQuery() {
+        if(maxPlaces == 0)
+            return statement;
         boolean startedWith = statement.startsWith(QUERY_PARAMETER_PLACEHOLDER);
         String[] parts = statement.split(QUERY_PARAMETER_PLACEHOLDER);
-        if(parts.length <= elements.size())
+        if(maxPlaces < elements.size())
             throw new DatabaseRuntimeException("Element mismatch. Amount of elements to be inserted too big. Unable to process query further.");
-        if((parts.length - 1) != elements.size())
+        if(maxPlaces > elements.size())
             throw new DatabaseRuntimeException("Element mismatch. Amount of elements to be inserted too small. Not enough elements to fill all gaps in the query.");
         StringBuilder sb = new StringBuilder();
         int startList = 0;
+        int index = 0;
         if(startedWith) {
             sb.append(getObject(0));
             startList = 1;
+            index = 1;
         }
-        for (String part : parts) {
-            sb.append(part);
-            sb.append(getObject(startList));
-            startList++;
+        for(; index < parts.length; index++) {
+            sb.append(parts[index]);
+            if(startList < maxPlaces) {
+                sb.append(getObject(startList));
+                startList++;
+            }
         }
         return sb.toString();
     }
@@ -96,6 +103,7 @@ public class Query {
     }
 
     @Override
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     public boolean equals(Object obj) {
         Boolean b = EqualsUtils.checkObject(this, obj);
         if(b != null) {
@@ -153,6 +161,7 @@ public class Query {
         }
 
         @Override
+        @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
         public boolean equals(Object obj) {
             Boolean b = EqualsUtils.checkObject(this, obj);
             if(b != null) {

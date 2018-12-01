@@ -69,6 +69,7 @@ public final class KeyValue {
     }
     
     @Override
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     public boolean equals(Object obj) {
         Boolean b = EqualsUtils.checkObject(this, obj);
         if(b != null) {
