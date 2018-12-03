@@ -37,7 +37,7 @@ public abstract class DataAccessObject implements IDataAccessObject {
     protected static final String EQUALS = " = ";
     protected static final String COMMA = ", ";
     protected static final String AND = " AND ";
-    protected static final String MISSING_PK = "Primary key can not be found. Is annotation PrimaryKey applied?";
+    protected static final String MISSING_PK = "Primary key name or value is empty.";
     protected static final String NO_VALID_CONSTRUCTOR = "Cannot find empty public constructor. Empty meaning no arguments.";
     protected static final String SELECT_ALL = "SELECT %s FROM %s";
     protected static final String SELECT_WHERE = "SELECT %s FROM %s WHERE %s";
@@ -133,7 +133,7 @@ public abstract class DataAccessObject implements IDataAccessObject {
         String table = DBUtils.getTableName(obj.getClass());
         List<KeyValue> kvs = DBUtils.getFields(obj, true);
         KeyValue pk = DBUtils.getPrimaryKey(obj);
-        if (pk == null) {
+        if (pk.getKey().isEmpty() || pk.getValue().isEmpty()) {
             throw new DatabaseRuntimeException(MISSING_PK);
         }
         StringBuilder set = StringUtils.createString(kvs, EQUALS, COMMA);
@@ -166,7 +166,7 @@ public abstract class DataAccessObject implements IDataAccessObject {
     public <T> boolean removeObject(T obj) {
         String table = DBUtils.getTableName(obj.getClass());
         KeyValue pk = DBUtils.getPrimaryKey(obj);
-        if (pk == null) {
+        if(pk.getKey().isEmpty() || pk.getValue().isEmpty()) {
             throw new DatabaseRuntimeException(MISSING_PK);
         }
         String sql = String.format(DELETE_ITEM, table, pk.getKey() + EQUALS + pk.getValue());

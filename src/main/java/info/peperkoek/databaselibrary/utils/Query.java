@@ -44,12 +44,12 @@ public class Query {
     public String getQuery() {
         if(maxPlaces == 0)
             return statement;
-        boolean startedWith = statement.startsWith(QUERY_PARAMETER_PLACEHOLDER);
-        String[] parts = statement.split(QUERY_PARAMETER_PLACEHOLDER);
         if(maxPlaces < elements.size())
             throw new DatabaseRuntimeException("Element mismatch. Amount of elements to be inserted too big. Unable to process query further.");
         if(maxPlaces > elements.size())
             throw new DatabaseRuntimeException("Element mismatch. Amount of elements to be inserted too small. Not enough elements to fill all gaps in the query.");
+        boolean startedWith = statement.startsWith(QUERY_PARAMETER_PLACEHOLDER);
+        String[] parts = statement.split(QUERY_PARAMETER_PLACEHOLDER);
         StringBuilder sb = new StringBuilder();
         int startList = 0;
         int index = 0;

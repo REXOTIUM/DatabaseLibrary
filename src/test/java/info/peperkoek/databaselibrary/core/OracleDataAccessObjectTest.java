@@ -5,16 +5,18 @@ import info.peperkoek.databaselibrary.enums.LogLevel;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.Before;
+import org.junit.Ignore;
 
 /**
  *
  * @author Rick Pijnenburg - REXOTIUM
  * @email m.a.a.pijnenburg@gmail.com
  */
+@Ignore
 public class OracleDataAccessObjectTest extends DataAccessObjectTest {
     
     @Before
-    public void setup() {
+    public void setUp() {
         dao = DatabaseManager.getManager("DatabaseLibTestUser", "DatabaseLibTestUserPassword", "database.peperkoek.info", "DatabaseLibTest", 6969, Database.ORACLE);
         dao.setLogLevel(LogLevel.DEBUG);
         createData();
@@ -22,7 +24,7 @@ public class OracleDataAccessObjectTest extends DataAccessObjectTest {
     }
     
     @After
-    public void breakdown() {
+    public void tearDown() {
         removeData();
     }
     

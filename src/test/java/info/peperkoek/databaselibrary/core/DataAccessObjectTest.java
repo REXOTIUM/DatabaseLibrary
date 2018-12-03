@@ -1,6 +1,5 @@
 package info.peperkoek.databaselibrary.core;
 
-import info.peperkoek.databaselibrary.enums.LogLevel;
 import info.peperkoek.databaselibrary.testutils.*;
 import info.peperkoek.databaselibrary.utils.Query;
 import java.util.ArrayList;

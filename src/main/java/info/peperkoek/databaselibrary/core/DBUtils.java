@@ -465,7 +465,7 @@ final class DBUtils {
      */
     private static String objectToString(Object o, boolean nullable) {
         if (o == null) {
-            return nullable ? NULL :EMPTY;
+            return nullable ? NULL : EMPTY;
         }
         Class<?> c = o.getClass();
         if (o.getClass().isEnum()) {

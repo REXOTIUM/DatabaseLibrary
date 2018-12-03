@@ -14,7 +14,7 @@ import org.junit.Test;
 public class MSSQLDataAccessObjectTest extends DataAccessObjectTest {
     
     @Before
-    public void setup() {
+    public void setUp() {
         dao = DatabaseManager.getManager("DatabaseLibTestUser", "DatabaseLibTestUserPassword", "database.peperkoek.info", "DatabaseLibTest", 1818, Database.MSSQL);
         dao.setLogLevel(LogLevel.DEBUG);
         createData();
@@ -22,7 +22,7 @@ public class MSSQLDataAccessObjectTest extends DataAccessObjectTest {
     }
     
     @After
-    public void breakdown() {
+    public void tearDown() {
         removeData();
     }
     

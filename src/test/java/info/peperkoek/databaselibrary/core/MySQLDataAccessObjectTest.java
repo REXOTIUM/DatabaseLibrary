@@ -14,7 +14,7 @@ import org.junit.Before;
 public class MySQLDataAccessObjectTest extends DataAccessObjectTest {
     
     @Before
-    public void setup() {
+    public void setUp() {
         dao = DatabaseManager.getManager("DatabaseLibTestUser", "DatabaseLibTestUserPassword", "database.peperkoek.info", "databaselibtest", 1993, Database.MYSQL);
         dao.setLogLevel(LogLevel.DEBUG);
         createData();
@@ -22,7 +22,7 @@ public class MySQLDataAccessObjectTest extends DataAccessObjectTest {
     }
     
     @After
-    public void breakdown() {
+    public void tearDown() {
         removeData();
     }
     
