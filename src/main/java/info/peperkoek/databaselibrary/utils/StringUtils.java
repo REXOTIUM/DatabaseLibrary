@@ -7,7 +7,7 @@ import java.util.List;
  * 
  * @author Rick Pijnenburg - REXOTIUM
  */
-public class StringUtils {
+public final class StringUtils {
     private static final String EMPTY = "";
     
     private StringUtils() {
@@ -25,10 +25,10 @@ public class StringUtils {
             return -1;
         }
         int output = 0;
-        int start = 0;
         if(string.length() == 0 || sequence.length() == 0) {
             return output;
         }
+        int start = 0;
         while(start < string.length()) {
             if(string.startsWith(sequence, start)) {
                 output++;

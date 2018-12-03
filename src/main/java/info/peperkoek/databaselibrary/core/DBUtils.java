@@ -1,17 +1,16 @@
 package info.peperkoek.databaselibrary.core;
 
+import info.peperkoek.databaselibrary.exceptions.DatabaseRuntimeException;
 import info.peperkoek.databaselibrary.interfaces.IDatabaseObject;
 import info.peperkoek.databaselibrary.utils.KeyValue;
 import info.peperkoek.databaselibrary.annotations.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import info.peperkoek.databaselibrary.annotations.PrimaryKey;
-import info.peperkoek.databaselibrary.exceptions.DatabaseRuntimeException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;

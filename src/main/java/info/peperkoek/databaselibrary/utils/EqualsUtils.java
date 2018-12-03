@@ -4,7 +4,7 @@ package info.peperkoek.databaselibrary.utils;
  *
  * @author Rick Pijnenburg - REXOTIUM
  */
-public class EqualsUtils {
+public final class EqualsUtils {
     
     private EqualsUtils() {
         throw new IllegalStateException("Utility class");

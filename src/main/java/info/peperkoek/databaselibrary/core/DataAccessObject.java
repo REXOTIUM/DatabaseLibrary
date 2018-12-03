@@ -31,7 +31,7 @@ import java.util.logging.Logger;
  * 
  * @author Rick Pijnenburg - REXOTIUM
  */
-public abstract class DataAccessObject implements IDataAccessObject {
+public abstract class DataAccessObject extends LoggingObject implements IDataAccessObject {
     protected static final String EMPTY = "";
     protected static final String ID = "_id";
     protected static final String EQUALS = " = ";
@@ -55,8 +55,6 @@ public abstract class DataAccessObject implements IDataAccessObject {
     protected static final String INSERT_LINK_TABLE = "INSERT INTO %s (%s, %s) VALUES (%s, %s)";
     protected static final String SELECT_LINK_TABLE = "SELECT %s from %s A join %s B on A.%s = B.%s where %s";
     protected final String connectionString;
-    protected final Logger logger;
-    protected LogLevel logLevel;
     
     /**
      * 
@@ -64,9 +62,8 @@ public abstract class DataAccessObject implements IDataAccessObject {
      * @param logger The logger to log messages in.
      */
     protected DataAccessObject(String connectionString, Logger logger) {
+        super(logger, LogLevel.QUERY);
         this.connectionString = connectionString;
-        this.logger = logger;
-        this.logLevel = LogLevel.DEBUG;
     }
     
     @Override
@@ -101,9 +98,7 @@ public abstract class DataAccessObject implements IDataAccessObject {
 
     @Override
     public <T> Collection<T> getObjects(Class<T> clazz) {
-        String table = DBUtils.getTableName(clazz);
-        String sql = String.format(SELECT_ALL, DBUtils.getColumnString(clazz), table);
-        return queryToObject(clazz, sql);
+        return queryToObject(clazz, String.format(SELECT_ALL, DBUtils.getColumnString(clazz), DBUtils.getTableName(clazz)));
     }
     
     @Override
@@ -191,11 +186,6 @@ public abstract class DataAccessObject implements IDataAccessObject {
                 return false;
         }
         return true;
-    }
-    
-    @Override
-    public void setLogLevel(LogLevel level) {
-        this.logLevel = level;
     }
     
     /**
@@ -327,9 +317,7 @@ public abstract class DataAccessObject implements IDataAccessObject {
         for(Field f : DBUtils.getAllFields(obj.getClass())) {
             if(!f.isAnnotationPresent(LinkTable.class))
                 continue;
-            String table = f.getAnnotation(LinkTable.class).tableName();
-            String sql = String.format(DELETE_ITEM, table, column + EQUALS + id);
-            if(!nonQuery(sql))
+            if(!nonQuery(String.format(DELETE_ITEM, f.getAnnotation(LinkTable.class).tableName(), column + EQUALS + id)))
                 return false;
         }
         return true;
@@ -543,41 +531,6 @@ public abstract class DataAccessObject implements IDataAccessObject {
     }
     
     /**
-     * 
-     * @param level The level at which to log it
-     * @param message The message to log
-     */
-    protected void log(Level level, String message) {
-        if(doLog(level)) {
-            logger.log(level, message);
-        }
-    }
-    
-    /**
-     * 
-     * @param level The level at which to log it
-     * @param message The message to log
-     * @param thrown The throwable to log
-     */
-    protected void log(Level level, String message, Throwable thrown) {
-        if(doLog(level)) {
-            logger.log(level, message, thrown);
-        }
-    }
-    
-    /**
-     * 
-     * @param level The level at which to log it
-     * @param message The message to log
-     * @param object The object to log
-     */
-    protected void log(Level level, String message, Object object) {
-        if(doLog(level)) {
-            logger.log(level, message, object);
-        }
-    }
-    
-    /**
      * Get item which has primary key pk.
      * @param <T> The type of the class
      * @param clazz The class of the item to get
@@ -629,23 +582,13 @@ public abstract class DataAccessObject implements IDataAccessObject {
      * @see LinkTable
      */
     private <T, U> Collection<T> getLinkItems(Class<T> clazz, U item, String linktable) {
-        Collection<T> output = new ArrayList<>();
         String columnnames = DBUtils.getColumnString(clazz);
         String table = DBUtils.getTableName(clazz);
         String pk = DBUtils.getPrimaryKeyName(clazz);
         String column = DBUtils.getTableName(item.getClass()) + ID;
         KeyValue kv = DBUtils.getPrimaryKey(item);
         String sql = String.format(SELECT_LINK_TABLE, columnnames, table, linktable, pk, table + ID, column + EQUALS + kv.getValue());
-        try {
-            Constructor<T> constructor = clazz.getConstructor((Class<?>[]) null);
-            for (Map<String, String> map : query(sql)) {
-                output.add(toInstance(constructor, map));
-            }
-            return output;
-        } catch (NoSuchMethodException | SecurityException ex) {
-            log(Level.SEVERE, NO_VALID_CONSTRUCTOR, ex);
-            return output;
-        }
+        return queryToObject(clazz, sql);
     }
     
     /**
@@ -660,34 +603,6 @@ public abstract class DataAccessObject implements IDataAccessObject {
      */
     private <T, U> T getLinkItem(Class<T> clazz, U item, String linktable) {
         return getLinkItems(clazz, item, linktable).stream().findFirst().orElse(null);
-    }
-    
-    /**
-     * Checks the Level given to the LogLevel field in this class
-     * @param level The level to check against
-     * @return Level is high enough to log.
-     * @see LogLevel
-     */
-    private boolean doLog(Level level) {
-        int loglevel;
-        switch(logLevel) {
-            case INFO:
-                loglevel = Level.FINE.intValue();
-                break;
-            case QUERY:
-                loglevel = Level.INFO.intValue();
-                break;
-            case SEVERE:
-                loglevel = Level.SEVERE.intValue();
-                break;
-            case NONE:
-                loglevel = Level.OFF.intValue();
-                break;
-            case DEBUG:
-            default:
-                loglevel = Level.ALL.intValue();
-        }
-        return level.intValue() >= loglevel;
     }
     
     /**
