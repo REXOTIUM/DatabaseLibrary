@@ -1,7 +1,6 @@
 package info.peperkoek.databaselibrary.interfaces;
 
 import info.peperkoek.databaselibrary.utils.Query;
-import info.peperkoek.databaselibrary.enums.LogLevel;
 import java.util.Collection;
 
 /**
